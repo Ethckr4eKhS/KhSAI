@@ -9,25 +9,29 @@
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px}
 h1{font-size:22px;font-weight:600;letter-spacing:.02em;margin:0}
 button,input,select{font:inherit;color:var(--tx)}
-.btn{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:8px 14px}
+.btn{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:8px 14px;cursor:pointer}
+.btn:active{opacity:.7}
+.row{display:flex;gap:8px}
+.row .btn{flex:1}
 #set{display:none;flex-direction:column;gap:10px;padding:0 18px 14px;border-bottom:1px solid var(--ln)}
 #set.open{display:flex}
 #set label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mu)}
-input[type=password],select{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px;width:100%}
+input[type=password],input[type=text],select{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px;width:100%}
 #log{flex:1;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px}
-.m{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap}
+.m{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;word-break:break-word}
 .u{align-self:flex-end;background:var(--ln)}
 .j{align-self:flex-start;background:var(--sf);border-left:2px solid var(--cy)}
-.s{align-self:center;color:var(--mu);font-size:14px;text-align:center}
-footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 18px 18px}
-#stat{min-height:22px;color:var(--mu);font-size:14px;text-align:center}
-#mic{width:96px;height:96px;border-radius:50%;border:2px solid var(--cy);background:radial-gradient(circle,var(--cy) 0 18%,transparent 19%),radial-gradient(circle,transparent 0 40%,#3de0ff33 41% 46%,transparent 47%),var(--sf);box-shadow:0 0 24px #3de0ff44}
+.s{align-self:center;color:var(--mu);font-size:13px;text-align:center}
+footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 18px 16px}
+#txtBar{display:flex;gap:8px;width:100%}
+#txtBar input{flex:1;padding:8px 12px;font-size:15px}
+#stat{min-height:20px;color:var(--mu);font-size:13px;text-align:center}
+#mic{width:88px;height:88px;border-radius:50%;border:2px solid var(--cy);background:radial-gradient(circle,var(--cy) 0 18%,transparent 19%),radial-gradient(circle,transparent 0 40%,#3de0ff33 41% 46%,transparent 47%),var(--sf);box-shadow:0 0 24px #3de0ff44;cursor:pointer}
 #mic.on{border-color:var(--am);background:radial-gradient(circle,var(--am) 0 18%,transparent 19%),radial-gradient(circle,transparent 0 40%,#ffb34744 41% 46%,transparent 47%),var(--sf);animation:p 1.2s ease-in-out infinite}
 @keyframes p{50%{box-shadow:0 0 0 14px #ffb34722}}
-@media (prefers-reduced-motion:reduce){#mic.on{animation:none}}
 .chk{display:flex;gap:8px;align-items:center;color:var(--mu);font-size:14px}
 </style>
 </head>
@@ -35,8 +39,11 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10
 <header><h1>Jarvis</h1><button class="btn" id="gear">Sozlamalar</button></header>
 <div id="set">
   <label>Gemini API kaliti<input id="key" type="password" autocomplete="off" placeholder="AIza..."></label>
-  <button class="btn" id="save">Saqlash va modellarni yuklash</button>
-  <label>Model<select id="model"><option>gemini-flash-latest</option></select></label>
+  <div class="row">
+    <button class="btn" id="save">Saqlash</button>
+    <button class="btn" id="testTts">Ovozni sinash</button>
+  </div>
+  <label>Asosiy model<select id="model"><option value="gemini-2.5-flash">gemini-2.5-flash</option></select></label>
   <label>Javob ovozi tili
     <select id="tl">
       <option value="uz-UZ">Oʻzbek (uz-UZ)</option>
@@ -45,23 +52,32 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10
       <option value="en-US">Ingliz (en-US)</option>
     </select>
   </label>
-  <button class="btn" id="vt">Ovozni sinash</button>
 </div>
 <div id="log"></div>
 <footer>
   <div id="stat"></div>
   <button id="mic" aria-label="Gapirish"></button>
   <label class="chk"><input type="checkbox" id="auto"> Doimiy suhbat</label>
+  <form id="txtBar">
+    <input id="txtIn" type="text" placeholder="Yoki yozib yuboring..." autocomplete="off">
+    <button class="btn" type="submit">Yuborish</button>
+  </form>
 </footer>
 <script>
 const $ = id => document.getElementById(id);
 const LS = window.localStorage;
 const API = "https://generativelanguage.googleapis.com/v1beta/";
-const SYS = "Sen Jarvis — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber.";
+const SYS = "Sen Jarvis — Shakhriyorning shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil.";
+const FALLBACKS = ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"];
+
 let key = LS.getItem("k") || "";
-let model = LS.getItem("m") || "gemini-flash-latest";
+let model = LS.getItem("m") || "gemini-2.5-flash";
 let tl = LS.getItem("tl") || "uz-UZ";
-let hist = [], rec = null, listening = false, busy = false;
+let hist = [], voices = [], rec = null, listening = false, busy = false;
+
+function loadVoices() { voices = speechSynthesis.getVoices(); }
+loadVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = loadVoices;
 
 function say(t, c) {
   const d = document.createElement("div");
@@ -76,59 +92,95 @@ async function loadModels() {
     const r = await fetch(API + "models?pageSize=200", { headers: { "x-goog-api-key": key } });
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
-    const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace("models/", ""));
+    const ms = (j.models || [])
+      .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
+      .map(m => m.name.replace("models/", ""))
+      .filter(n => /gemini/.test(n) && !/image|tts|audio|embedding|aqa/.test(n));
     const sel = $("model"); sel.innerHTML = "";
     ms.forEach(n => { const o = document.createElement("option"); o.value = o.textContent = n; sel.appendChild(o); });
-    sel.value = ms.includes(model) ? model
-      : (ms.find(n => n === "gemini-flash-latest") || ms.find(n => /flash/.test(n) && !/lite|image|tts|live|audio/.test(n)) || ms[0]);
+    if (ms.includes(model)) sel.value = model;
+    else if (ms.includes("gemini-2.5-flash")) sel.value = "gemini-2.5-flash";
     model = sel.value; LS.setItem("m", model);
-    stat("Kalit qabul qilindi. Modellar yuklandi.");
-  } catch (e) { stat("Kalit yoki model xatosi: " + e.message); }
+    stat("Tayyor. Model: " + model);
+  } catch (e) { stat("Kalit xatosi: " + e.message); }
 }
 
-const FB = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
-async function gen(m) {
+async function callModel(m, contents) {
   const r = await fetch(API + "models/" + m + ":generateContent", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS }] }, contents: hist })
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS }] }, contents })
   });
   const j = await r.json();
-  if (!r.ok) { const e = new Error((j.error && j.error.message) || r.status); e.busy = [429, 500, 503].includes(r.status); throw e; }
-  return j;
-}
-async function ask(text) {
-  hist.push({ role: "user", parts: [{ text }] });
-  hist = hist.slice(-16);
-  while (hist.length && hist[0].role !== "user") hist.shift();
-  let j, last;
-  for (const m of [model, ...FB.filter(x => x !== model)]) {
-    try { j = await gen(m); break; }
-    catch (e) { last = e; if (!e.busy) break; stat("Band, zaxira model sinayapman…"); }
+  if (!r.ok) {
+    const err = new Error((j.error && j.error.message) || r.status);
+    err.status = r.status;
+    throw err;
   }
-  if (!j) { hist.pop(); throw last; }
-  const a = ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [])
-    .map(p => p.text || "").join("").trim() || "(javob kelmadi)";
-  hist.push({ role: "model", parts: [{ text: a }] });
-  return a;
+  return ((j.candidates?.[0]?.content?.parts) || []).map(p => p.text || "").join("").trim();
+}
+
+async function ask(text) {
+  const nextHist = [...hist, { role: "user", parts: [{ text }] }].slice(-16);
+  while (nextHist.length && nextHist[0].role !== "user") nextHist.shift();
+
+  const queue = [model, ...FALLBACKS.filter(m => m !== model)];
+  let lastErr = null;
+
+  for (const m of queue) {
+    try {
+      if (m !== model) stat(model + " band, " + m + " sinovda…");
+      const ans = await callModel(m, nextHist);
+      const reply = ans || "(javob kelmadi)";
+      hist = [...nextHist, { role: "model", parts: [{ text: reply }] }];
+      return reply;
+    } catch (e) {
+      lastErr = e;
+      const retryable = e.status === 503 || e.status === 429 || /high demand|overloaded|quota/i.test(e.message);
+      if (!retryable) throw e;
+    }
+  }
+  throw lastErr;
 }
 
 function speak(t) {
   return new Promise(res => {
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t.replace(/[*_#`]/g, ""));
+    if (!voices.length) loadVoices();
+    const clean = t.replace(/[*_#`]/g, "");
+    const u = new SpeechSynthesisUtterance(clean);
     u.lang = tl;
-    const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().replace("_", "-").startsWith(tl.slice(0, 2).toLowerCase()));
+    const prefix = tl.slice(0, 2).toLowerCase();
+    const v = voices.find(v => v.lang.toLowerCase().replace("_", "-").startsWith(prefix));
     if (v) u.voice = v;
-    stat("Gapiryapti: " + (v ? v.name + " (" + v.lang + ")" : "standart ovoz, " + tl + " ovozi topilmadi"));
-    u.onend = u.onerror = () => res();
+    stat("Ovoz: " + (v ? v.name : "standart (" + tl + " topilmadi)"));
+
+    let done = false;
+    const finish = () => { if (!done) { done = true; clearTimeout(timer); res(); } };
+    const timer = setTimeout(finish, Math.max(4000, clean.length * 130));
+    u.onend = u.onerror = finish;
     speechSynthesis.speak(u);
   });
 }
 
+async function handleQuery(q) {
+  if (!q || busy) return;
+  if (!key) { $("set").classList.add("open"); stat("Avval API kalitni kiriting."); return; }
+  say(q, "u"); stat("Oʻylayapman…"); busy = true;
+  try {
+    const a = await ask(q);
+    say(a, "j");
+    await speak(a);
+  } catch (e) {
+    say("Xato: " + e.message, "s");
+  }
+  busy = false;
+  if ($("auto").checked && !listening) listen(); else stat("Tayyor.");
+}
+
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function listen() {
-  if (!SR) { stat("Bu brauzer nutq tanishni qoʻllamaydi. Chrome ishlating."); return; }
+  if (!SR) { stat("Brauzer nutq tanishni qoʻllamaydi. Chrome ishlating."); return; }
   if (!key) { $("set").classList.add("open"); stat("Avval API kalitni kiriting."); return; }
   speechSynthesis.cancel();
   rec = new SR(); rec.lang = "uz-UZ"; rec.interimResults = true; rec.continuous = false;
@@ -141,12 +193,7 @@ function listen() {
     if (err) return;
     const q = fin.trim();
     if (!q) { if ($("auto").checked) listen(); else stat("Hech narsa eshitilmadi."); return; }
-    say(q, "u"); stat("Oʻylayapman…"); busy = true;
-    try {
-      const a = await ask(q); say(a, "j"); await speak(a);
-    } catch (e) { say("Xato: " + e.message, "s"); busy = false; return; }
-    busy = false;
-    if ($("auto").checked) listen(); else stat("Tayyor.");
+    await handleQuery(q);
   };
   rec.start();
 }
@@ -157,15 +204,22 @@ $("mic").onclick = () => {
   else if (speechSynthesis.speaking) speechSynthesis.cancel();
   else listen();
 };
+$("txtBar").onsubmit = e => {
+  e.preventDefault();
+  const q = $("txtIn").value.trim();
+  if (!q) return;
+  $("txtIn").value = "";
+  handleQuery(q);
+};
 $("gear").onclick = () => $("set").classList.toggle("open");
 $("save").onclick = () => { key = $("key").value.trim(); LS.setItem("k", key); loadModels(); };
-$("vt").onclick = () => speak("Salom, boss. Men Jarvisman. Ovoz ishlayapti.");
+$("testTts").onclick = () => speak("Salom boss, ovoz tizimi sinovdan oʻtmoqda.");
 $("model").onchange = () => { model = $("model").value; LS.setItem("m", model); };
 $("tl").onchange = () => { tl = $("tl").value; LS.setItem("tl", tl); };
 
 $("key").value = key; $("tl").value = tl;
 if (key) loadModels(); else $("set").classList.add("open");
-say("Salom, boss. Kalitni kiriting, keyin aylanani bosing va gapiring.", "s");
+say("Salom, boss. Tayyorman.", "s");
 </script>
 </body>
 </html>
