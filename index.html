@@ -101,7 +101,8 @@ const API = "https://generativelanguage.googleapis.com/v1beta/";
 const SYS = "Sen Jarvis — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber.";
 const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
 let key = g("k", ""), model = g("m", "gemini-flash-latest"), tl = g("tl", "uz-UZ");
-let prov = g("pv", "phone"), nkey = g("nk", ""), nvoice = g("nv", "kamron"), nurl = g("nu", "https://my.neuronai.uz/api/v1/tts");
+let prov = g("pv", "phone"), nkey = g("nk", ""), nvoice = g("nv", "kamron"), nurl = g("nu", "https://my.neuronai.uz/api/v1/tts/synthesize");
+if (/\/api\/v1\/tts\/?$/.test(nurl)) { nurl += (nurl.endsWith("/") ? "" : "/") + "synthesize"; sv("nu", nurl); }
 let hist = [], rec = null, S = "idle", aud = null;
 const LBL = { idle: "Tayyor", listen: "Tinglayapman", think: "Oʻylayapman", speak: "Gapiryapman" };
 function setS(s) { S = s; document.body.dataset.s = s; $("chip").textContent = LBL[s]; }
@@ -171,7 +172,7 @@ async function speakNai(t) {
   const r = await fetch(nurl, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": "Bearer " + nkey },
-    body: JSON.stringify({ text: t, voice_id: nvoice, language: "uz" })
+    body: JSON.stringify({ text: t, voice_id: nvoice, language: "uz", quality: "standard" })
   });
   if (!r.ok) {
     let m = r.status;
