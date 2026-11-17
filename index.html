@@ -57,7 +57,16 @@ body[data-v=cv] #cv{display:flex}
 #tf{display:flex;gap:8px;align-items:center;padding:6px 16px 4px}
 #ti{flex:1;min-width:0;background:var(--gl);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;outline:0}
 #ti:focus{border-color:var(--c)}
-.rd{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mu);gap:2px}
+.tg{position:relative;flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gl);border:1px solid var(--ln);cursor:pointer;transition:.25s}
+.tg input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.tg svg{width:20px;height:20px;fill:none;stroke:var(--mu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:.25s}
+.tg:has(input:checked){border-color:var(--c);box-shadow:0 0 12px #2de2c833}
+.tg input:checked+svg{stroke:var(--c)}
+.chk{cursor:pointer}
+.sw{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:44px;height:26px;margin:0;border-radius:99px;background:var(--gl);border:1px solid var(--ln);cursor:pointer;transition:.25s}
+.sw::before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:.25s}
+.sw:checked{background:#2de2c824;border-color:var(--c)}
+.sw:checked::before{transform:translateX(18px);background:var(--c);box-shadow:0 0 10px var(--c)}
 nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:5px;border-radius:99px;background:#0b1824d9;border:1px solid var(--ln);backdrop-filter:blur(14px);z-index:5}
 nav button{border:0;background:none;padding:10px 26px;border-radius:99px;color:var(--mu);font-weight:600;cursor:pointer;transition:.25s}
 nav button.on{background:var(--c);color:#04121a}
@@ -85,12 +94,12 @@ nav button.on{background:var(--c);color:#04121a}
   <button id="orb" aria-label="Gapirish"><canvas id="hud"></canvas></button>
   <div id="tel"></div>
   <div id="cap"><div id="cq"></div><div id="ca"></div></div>
-  <label class="chk"><input type="checkbox" id="auto"> Doimiy suhbat</label>
+  <label class="chk"><input type="checkbox" id="auto" class="sw"><span>Doimiy suhbat</span></label>
 </main>
 <section id="cv">
   <div id="log"></div>
   <div id="sg"><button>Toshkentda ob-havo qanday?</button><button>Soat nechchi?</button><button>10 daqiqaga taymer qoʻy</button><button>Menga bir qiziq fakt ayt</button></div>
-  <form id="tf"><input id="ti" type="text" placeholder="Xabar yozing…" autocomplete="off"><label class="rd"><input type="checkbox" id="rd">ovoz</label><button class="ic" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form id="tf"><input id="ti" type="text" placeholder="Xabar yozing…" autocomplete="off"><label class="tg" title="Javobni ovozda aytish"><input type="checkbox" id="rd" aria-label="Javobni ovozda aytish"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></label><button class="ic" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
 </section>
 <nav id="nv"><button data-v="vv" class="on">Ovoz</button><button data-v="cv">Chat</button></nav>
 <div id="wrap"><div id="bd"></div>
@@ -98,7 +107,7 @@ nav button.on{background:var(--c);color:#04121a}
   <div class="hd"><h2>Sozlamalar</h2><button class="btn" id="cl">Yopish</button></div>
   <label>Gemini API kaliti<input id="key" type="password" autocomplete="off" placeholder="AIza..."></label>
   <button class="btn" id="save">Saqlash va modellarni yuklash</button>
-  <label>Model<select id="model"><option>gemini-flash-latest</option></select></label>
+  <label>Model<select id="model"><option value="auto">Avto: eng yaxshi (tavsiya)</option></select></label>
   <label>NeuronAI API kaliti<input id="nk" type="password" autocomplete="off" placeholder="nai_..."></label>
   <label>Ovoz<select id="nv"></select></label>
   <button class="btn" id="lv">Ovozlarni yuklash</button>
@@ -112,7 +121,7 @@ const $ = id => document.getElementById(id), LS = window.localStorage;
 const API = "https://generativelanguage.googleapis.com/v1beta/", TTS = "https://my.neuronai.uz/api/v1/tts";
 const SYS = "Sen 4eKhSAI — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber. Ismingni faqat soʻralganda ayt.";
 const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
-let key = g("k", ""), model = g("m", "gemini-flash-latest"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
+let key = g("k", ""), model = g("m", "auto"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
 let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null, SP = null, mem = [];
 try { mem = JSON.parse(g("mem", "[]")); } catch (e) {}
 const sys = () => SYS + " Hozir: " + new Date().toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }) + ". Nutq tanish xato qilishi mumkin: maʼnosini taxmin qil, juda tushunarsiz boʻlsa bitta qisqa savol ber. %, °C, $ va qisqartmalarni soʻz bilan yoz." + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
@@ -154,12 +163,10 @@ async function loadModels() {
     if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
     const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace("models/", ""));
     sv("ml", JSON.stringify(ms));
-    const sel = $("model"); sel.innerHTML = "";
-    ms.forEach(n => { const o = document.createElement("option"); o.value = o.textContent = n; sel.appendChild(o); });
-    sel.value = ms.includes(model) ? model
-      : (ms.find(n => n === "gemini-flash-latest") || ms.find(n => /flash/.test(n) && !/lite|image|tts|live|audio/.test(n)) || ms[0]);
-    model = sel.value; sv("m", model);
-    stat("Kalit qabul qilindi. Modellar yuklandi.");
+    const all = ["auto", ...rank(ms)], sel = $("model"); sel.innerHTML = "";
+    all.forEach(n => { const o = document.createElement("option"); o.value = n; o.textContent = n === "auto" ? "Avto: eng yaxshi (tavsiya)" : n; sel.appendChild(o); });
+    sel.value = all.includes(model) ? model : "auto"; model = sel.value; sv("m", model);
+    stat("Kalit qabul qilindi. Eng yaxshi model: " + autoList()[0]);
   } catch (e) { stat("Kalit yoki model xatosi: " + e.message); }
 }
 
@@ -178,10 +185,26 @@ async function loadVoices() {
   } catch (e) { stat("Ovozlar xatosi: " + e.message); }
 }
 
-const FB = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+const BEST = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.5-flash-lite"];
+const BUSY = [404, 429, 500, 502, 503, 504], cool = {}, noTh = {};
 let ac = null;
 const nap = t => new Promise(r => setTimeout(r, t));
-const chain = () => { let ml = []; try { ml = JSON.parse(g("ml", "[]")); } catch (e) {} return [...new Set([model, ...FB, ...ml.filter(n => /flash/.test(n) && !/image|tts|live|audio|exp|8b|robotics|computer/.test(n))])].slice(0, 5); };
+const ver = n => { const m = /gemini-(\d+(?:\.\d+)?)/.exec(n); return m ? +m[1] : 0; };
+const usable = n => /^gemini-\d/.test(n) && /flash|pro/.test(n) && !/image|tts|live|audio|embed|robot|computer|omni|cyber|exp|8b|custom|thinking|banana/.test(n);
+const rank = l => l.filter(usable).sort((a, b) => ver(b) - ver(a) || /lite/.test(a) - /lite/.test(b) || /preview/.test(a) - /preview/.test(b));
+const lowable = m => /flash/.test(m) && !/lite/.test(m) && (ver(m) >= 3 || /latest/.test(m));
+const think = { generationConfig: { thinkingConfig: { thinkingLevel: "low" } } };
+const autoList = () => {
+  let ml = []; try { ml = JSON.parse(g("ml", "[]")); } catch (e) {}
+  const fl = rank(ml).filter(n => /flash/.test(n) && ver(n) >= 3);
+  if (!fl.length) return BEST;
+  return [...new Set([...fl.filter(n => !/lite/.test(n)).slice(0, 3), "gemini-flash-latest", ...fl.filter(n => /lite/.test(n)).slice(0, 1)])];
+};
+const chain = () => {
+  const u = [...new Set(model === "auto" ? autoList() : [model, ...autoList()])].slice(0, 6), ok = u.filter(n => !(cool[n] > Date.now()));
+  return ok.length ? ok : u;
+};
+if (model === "gemini-flash-latest") { model = "auto"; sv("m", model); }
 const textOf = j => ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || []).map(p => p.text || "").join("").trim();
 const TOOLS = [{ functionDeclarations: [
   { name: "get_time", description: "Hozirgi sana, vaqt va vaqt mintaqasini qaytaradi" },
@@ -206,10 +229,19 @@ const FN = {
   set_timer: async ({ seconds, label }) => { const n = Math.max(1, Math.min(+seconds || 0, 86400)), x = { id: Date.now(), at: Date.now() + n * 1000, l: label || "Vaqt tugadi" }; sv("tm", JSON.stringify([...tmGet(), x])); arm(x); return { ok: true, seconds: n }; },
   remember: async ({ fact }) => { mem = [...mem, String(fact).slice(0, 200)].slice(-30); sv("mem", JSON.stringify(mem)); upd(); return { ok: true }; },
   search_web: async ({ query }) => {
-    const r = await fetch(API + "models/gemini-2.5-flash:generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({ tools: [{ google_search: {} }], contents: [{ role: "user", parts: [{ text: query + "\n\nQisqa va aniq javob ber (3-4 jumla)." }] }] }) });
-    const j = await r.json(); if (!r.ok) return { error: (j.error && j.error.message) || r.status };
-    return { answer: textOf(j) };
+    let err = "qidiruv ishlamadi";
+    for (const m of chain()) {
+      try {
+        const r = await fetch(API + "models/" + m + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, signal: ac && ac.signal,
+          body: JSON.stringify({ tools: [{ google_search: {} }], contents: [{ role: "user", parts: [{ text: query + "\n\nQisqa va aniq javob ber (3-4 jumla)." }] }], ...(lowable(m) && !noTh[m] ? think : {}) }) });
+        const j = await r.json();
+        if (r.ok) return { answer: textOf(j) };
+        err = (j.error && j.error.message) || r.status;
+        if (r.status === 400 && /thinking/i.test(err)) { noTh[m] = 1; continue; }
+        if (!BUSY.includes(r.status)) break;
+      } catch (e) { if (e.name === "AbortError") throw e; err = e.message; }
+    }
+    return { error: err };
   }
 };
 
@@ -225,15 +257,18 @@ async function* sse(r) {
   }
 }
 async function streamOnce(m, contents, onText) {
-  const r = await fetch(API + "models/" + m + ":streamGenerateContent?alt=sse", {
-    method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    signal: ac && ac.signal,
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: sys() }] }, tools: TOOLS, contents, ...(/2\.5-flash/.test(m) ? { generationConfig: { thinkingConfig: { thinkingBudget: 0 } } } : {}) })
-  });
-  if (!r.ok) {
+  const go = async th => {
+    const r = await fetch(API + "models/" + m + ":streamGenerateContent?alt=sse", {
+      method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, signal: ac && ac.signal,
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: sys() }] }, tools: TOOLS, contents, ...(th ? think : {}) })
+    });
+    if (r.ok) return r;
     let j = {}; try { j = await r.json(); } catch (_) {}
-    const e = new Error((j.error && j.error.message) || r.status); e.busy = [404, 429, 500, 502, 503, 504].includes(r.status); throw e;
-  }
+    const msg = (j.error && j.error.message) || r.status;
+    if (th && r.status === 400 && /thinking/i.test(msg)) { noTh[m] = 1; return go(false); }
+    const e = new Error(msg); e.busy = BUSY.includes(r.status); throw e;
+  };
+  const r = await go(lowable(m) && !noTh[m]);
   const parts = [];
   for await (const j of sse(r)) {
     const ps = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
@@ -250,7 +285,7 @@ async function answer(q, onText) {
       for (const m of chain()) {
         let started = false;
         try { parts = await streamOnce(m, contents, t => { started = true; all += t; onText(t); }); break; }
-        catch (e) { last = e; if (!e.busy || started) throw e; stat("Band, zaxira model: " + m); }
+        catch (e) { last = e; if (!e.busy || started) throw e; cool[m] = Date.now() + 12e4; stat(m + " band, zaxira modelga oʻtyapman…"); }
       }
     }
     if (!parts) throw last;
@@ -265,7 +300,7 @@ async function answer(q, onText) {
     for (const c of calls) {
       const f = c.functionCall; stat("Vosita: " + f.name + "…"); let out;
       try { out = await FN[f.name](f.args || {}); } catch (e) { out = { error: e.message }; }
-      res.push({ functionResponse: { name: f.name, response: out } });
+      res.push({ functionResponse: { ...(f.id ? { id: f.id } : {}), name: f.name, response: out } });
     }
     steps.push({ role: "user", parts: res });
   }
@@ -444,6 +479,9 @@ function beep() {
 }
 function arm(x) { setTimeout(() => { sv("tm", JSON.stringify(tmGet().filter(y => y.id !== x.id))); alarm(x.l); }, Math.max(0, x.at - Date.now())); }
 sv("tm", JSON.stringify(tmGet().filter(x => x.at > Date.now() - 6e5))); tmGet().forEach(x => arm(x));
+
+$("rd").checked = g("rd", "") === "1";
+$("rd").onchange = () => { sv("rd", $("rd").checked ? "1" : "0"); stat($("rd").checked ? "Javoblar ovozda aytiladi." : "Javoblar faqat yoziladi."); };
 
 /* ---- HUD ---- */
 const cv = $("hud"), cx = cv.getContext("2d"), RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
