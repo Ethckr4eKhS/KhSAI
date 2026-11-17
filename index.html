@@ -3,72 +3,65 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#070d14">
-<title>Jarvis</title>
+<meta name="theme-color" content="#050b12">
+<title>4eKhSAI</title>
 <style>
-:root{--bg:#070d14;--gl:#ffffff0d;--ln:#ffffff1a;--tx:#e6f6fd;--mu:#7f9bad}
-body{--c:#3de0ff;--c2:#7a8cff}
-body[data-s=listen]{--c:#ffb347;--c2:#ff7a59}
-body[data-s=think]{--c:#a78bfa;--c2:#3de0ff}
-body[data-s=speak]{--c:#4ade80;--c2:#3de0ff}
+:root{--bg:#050b12;--gl:#ffffff0d;--ln:#ffffff1a;--tx:#e6f6fd;--mu:#7f9bad}
+body{--c:#3de0ff}
+body[data-s=listen]{--c:#ffb347}
+body[data-s=think]{--c:#a78bfa}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(120% 70% at 50% -10%,#123452 0,var(--bg) 60%);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/100% 34px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/34px 100%;mask-image:radial-gradient(70% 55% at 50% 30%,#000,transparent)}
+body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(120% 70% at 50% 20%,#0f2c46 0,var(--bg) 62%);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/32px 100%;mask-image:radial-gradient(75% 60% at 50% 30%,#000,transparent)}
+.scan{position:fixed;left:0;right:0;top:-140px;height:140px;pointer-events:none;background:linear-gradient(transparent,#3de0ff14,transparent);animation:sc 8s linear infinite}
+@keyframes sc{to{transform:translateY(120vh)}}
+.fr{position:fixed;inset:calc(8px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom));pointer-events:none;opacity:.5;background:linear-gradient(var(--c),var(--c)) 0 0/22px 1.5px,linear-gradient(var(--c),var(--c)) 0 0/1.5px 22px,linear-gradient(var(--c),var(--c)) 100% 0/22px 1.5px,linear-gradient(var(--c),var(--c)) 100% 0/1.5px 22px,linear-gradient(var(--c),var(--c)) 0 100%/22px 1.5px,linear-gradient(var(--c),var(--c)) 0 100%/1.5px 22px,linear-gradient(var(--c),var(--c)) 100% 100%/22px 1.5px,linear-gradient(var(--c),var(--c)) 100% 100%/1.5px 22px;background-repeat:no-repeat}
 button,input,select{font:inherit;color:inherit}
-header{position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 18px 4px}
-.brand{font-weight:700;letter-spacing:.38em;font-size:15px}
+header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px 20px 4px}
+.brand{font-weight:800;font-size:19px;letter-spacing:.14em;background:linear-gradient(90deg,var(--tx),var(--c),var(--tx));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
+@keyframes sh{to{background-position:-220% 0}}
 .chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);background:var(--gl);border:1px solid var(--ln);border-radius:99px;padding:5px 12px;backdrop-filter:blur(10px)}
-.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:bl 1.6s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35}}
 .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gl);border:1px solid var(--ln);cursor:pointer}
 .ic svg{width:20px;height:20px;stroke:var(--tx);fill:none;stroke-width:2;stroke-linecap:round}
 main{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center}
-#orb{position:relative;flex:none;width:210px;height:210px;margin:10px 0 0;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.core{position:absolute;inset:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0,var(--c) 34%,#0b3f58 100%);box-shadow:0 0 50px var(--c),inset 0 0 22px #fff7;animation:br 3.4s ease-in-out infinite}
-.r{position:absolute;border-radius:50%;border:1.5px solid var(--c)}
-.r1{inset:30px;border-style:dashed;opacity:.55;animation:sp 10s linear infinite}
-.r2{inset:12px;border-color:var(--c2) transparent;opacity:.45;animation:sp 15s linear infinite reverse}
-.r3{inset:0;opacity:.18}
-[data-s=listen] .core{animation:pl .9s ease-in-out infinite}
-[data-s=think] .r1{animation-duration:1.5s}[data-s=think] .r2{animation-duration:2.2s}
-[data-s=speak] .core{animation:pl .55s ease-in-out infinite}
-[data-s=speak] .r3{animation:rp 1.2s ease-out infinite}
-@keyframes br{50%{transform:scale(1.06)}}
-@keyframes pl{50%{transform:scale(1.15)}}
-@keyframes sp{to{transform:rotate(360deg)}}
-@keyframes rp{from{transform:scale(.9);opacity:.5}to{transform:scale(1.28);opacity:0}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
-#stat{flex:none;min-height:22px;margin:6px 18px 4px;font-size:13px;color:var(--mu);text-align:center}
-#log{flex:1;min-height:0;width:100%;overflow-y:auto;padding:8px 16px 10px;display:flex;flex-direction:column;gap:10px;mask-image:linear-gradient(transparent,#000 22px)}
-.m{max-width:88%;padding:10px 14px;border-radius:16px;white-space:pre-wrap;border:1px solid var(--ln);backdrop-filter:blur(10px)}
-.u{align-self:flex-end;background:#3de0ff1f;border-color:#3de0ff40}
+#orb{flex:none;border:0;background:none;padding:0;margin:4px 0 0;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#tel{flex:none;font:12px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;color:var(--c);opacity:.8;margin-top:2px}
+#stat{flex:none;min-height:22px;margin:6px 18px 2px;font-size:13px;color:var(--mu);text-align:center}
+#log{flex:1;min-height:0;width:100%;overflow-y:auto;padding:8px 18px 10px;display:flex;flex-direction:column;gap:10px;mask-image:linear-gradient(transparent,#000 22px)}
+.m{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;border:1px solid var(--ln);backdrop-filter:blur(10px)}
+.u{align-self:flex-end;background:#3de0ff1a;border-right:2px solid #3de0ff}
 .j{align-self:flex-start;background:var(--gl);border-left:2px solid var(--c)}
 .s{align-self:center;color:var(--mu);font-size:14px;text-align:center;border:0;background:none}
-footer{display:flex;flex-direction:column;gap:8px;padding:6px 16px 14px}
+footer{position:relative;display:flex;flex-direction:column;gap:8px;padding:6px 20px 16px}
 #tf{display:flex;gap:8px}
 #ti{flex:1;min-width:0;background:var(--gl);border:1px solid var(--ln);border-radius:14px;padding:11px 14px;outline:0}
 #ti:focus{border-color:var(--c)}
 .chk{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mu);font-size:14px}
 #bd{position:fixed;inset:0;background:#0009;opacity:0;pointer-events:none;transition:.25s}
-#set{position:fixed;left:0;right:0;bottom:0;max-height:88dvh;overflow-y:auto;background:#0d1a26;border-top:1px solid var(--ln);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;transform:translateY(105%);transition:.3s}
+#set{position:fixed;left:0;right:0;bottom:0;max-height:88dvh;overflow-y:auto;background:#0b1824;border-top:1px solid var(--ln);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;transform:translateY(105%);transition:.3s}
 .open #set{transform:none}.open #bd{opacity:1;pointer-events:auto}
 #set h2{margin:0;font-size:17px}
 #set label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu)}
-#set input[type=password],#set input[type=text],#set select{width:100%;background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px}
-#set option{background:#0d1a26}
+#set input[type=password],#set select{width:100%;background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px}
+#set option{background:#0b1824}
 .btn{background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;cursor:pointer}
-.nai{display:none;flex-direction:column;gap:12px}.nai.on{display:flex}
 .hd{display:flex;justify-content:space-between;align-items:center}
+@media (prefers-reduced-motion:reduce){.scan,.brand,.chip::before{animation:none}}
 </style>
 </head>
 <body data-s="idle">
+<div class="scan"></div><div class="fr"></div>
 <header>
-  <div class="brand">JARVIS</div>
+  <div class="brand">4eKhSAI</div>
   <div class="chip" id="chip">Tayyor</div>
   <button class="ic" id="gear" aria-label="Sozlamalar"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
 </header>
 <main>
-  <button id="orb" aria-label="Gapirish"><span class="r r3"></span><span class="r r2"></span><span class="r r1"></span><span class="core"></span></button>
+  <button id="orb" aria-label="Gapirish"><canvas id="hud"></canvas></button>
+  <div id="tel"></div>
   <div id="stat"></div>
   <div id="log"></div>
 </main>
@@ -82,36 +75,32 @@ footer{display:flex;flex-direction:column;gap:8px;padding:6px 16px 14px}
   <label>Gemini API kaliti<input id="key" type="password" autocomplete="off" placeholder="AIza..."></label>
   <button class="btn" id="save">Saqlash va modellarni yuklash</button>
   <label>Model<select id="model"><option>gemini-flash-latest</option></select></label>
-  <label>Javob ovozi
-    <select id="pv"><option value="phone">Telefon ovozi</option><option value="nai">NeuronAI (oʻzbek ovozi)</option></select>
-  </label>
-  <div class="nai" id="nai">
-    <label>NeuronAI API kaliti<input id="nk" type="password" autocomplete="off" placeholder="nai_..."></label>
-    <label>Ovoz (voice_id)<input id="nv" type="text" autocomplete="off"></label>
-    <label>TTS manzili<input id="nu" type="text" autocomplete="off"></label>
-  </div>
-  <label>Telefon ovozi tili
-    <select id="tl"><option value="uz-UZ">Oʻzbek (uz-UZ)</option><option value="tr-TR">Turk (tr-TR)</option><option value="ru-RU">Rus (ru-RU)</option><option value="en-US">Ingliz (en-US)</option></select>
-  </label>
+  <label>NeuronAI API kaliti<input id="nk" type="password" autocomplete="off" placeholder="nai_..."></label>
+  <label>Ovoz<select id="nv"></select></label>
+  <button class="btn" id="lv">Ovozlarni yuklash</button>
   <button class="btn" id="vt">Ovozni sinash</button>
 </div></div>
 <script>
 const $ = id => document.getElementById(id), LS = window.localStorage;
-const API = "https://generativelanguage.googleapis.com/v1beta/";
-const SYS = "Sen Jarvis — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber.";
+const API = "https://generativelanguage.googleapis.com/v1beta/", TTS = "https://my.neuronai.uz/api/v1/tts";
+const SYS = "Sen 4eKhSAI — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber. Ismingni faqat soʻralganda ayt.";
 const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
-let key = g("k", ""), model = g("m", "gemini-flash-latest"), tl = g("tl", "uz-UZ");
-let prov = g("pv", "phone"), nkey = g("nk", ""), nvoice = g("nv", "kamron"), nurl = g("nu", "https://my.neuronai.uz/api/v1/tts/synthesize");
-if (/\/api\/v1\/tts\/?$/.test(nurl)) { nurl += (nurl.endsWith("/") ? "" : "/") + "synthesize"; sv("nu", nurl); }
-let hist = [], rec = null, S = "idle", aud = null;
+let key = g("k", ""), model = g("m", "gemini-flash-latest"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
+let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null;
 const LBL = { idle: "Tayyor", listen: "Tinglayapman", think: "Oʻylayapman", speak: "Gapiryapman" };
 function setS(s) { S = s; document.body.dataset.s = s; $("chip").textContent = LBL[s]; }
 function stat(t) { $("stat").textContent = t; }
 function say(t, c) {
   const d = document.createElement("div");
-  d.className = "m " + c; d.textContent = t;
-  $("log").appendChild(d); $("log").scrollTop = 1e9;
+  d.className = "m " + c; $("log").appendChild(d);
+  if (c === "j") { let i = 0; const iv = setInterval(() => { d.textContent = t.slice(0, i += 2); $("log").scrollTop = 1e9; if (i >= t.length) clearInterval(iv); }, 22); }
+  else { d.textContent = t; $("log").scrollTop = 1e9; }
 }
+function ready() {
+  if (key && nkey) return true;
+  $("wrap").classList.add("open"); stat("Avval Gemini va NeuronAI kalitlarini kiriting."); return false;
+}
+function unlock() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }
 
 async function loadModels() {
   if (!key) return;
@@ -127,6 +116,21 @@ async function loadModels() {
     model = sel.value; sv("m", model);
     stat("Kalit qabul qilindi. Modellar yuklandi.");
   } catch (e) { stat("Kalit yoki model xatosi: " + e.message); }
+}
+
+async function loadVoices() {
+  try {
+    const r = await fetch(TTS + "/voices", { headers: nkey ? { Authorization: "Bearer " + nkey } : {} });
+    const j = await r.json();
+    if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
+    const a = (Array.isArray(j) ? j : (j.data || j.voices || j.items || [])).filter(v => v && (v.voice_id || v.id));
+    if (!a.length) { stat("Ovozlar roʻyxati boʻsh."); return; }
+    const sel = $("nv"); sel.innerHTML = "";
+    a.forEach(v => { const id = v.voice_id || v.id, o = document.createElement("option"); o.value = id; o.textContent = (v.name || id) + (v.language ? " · " + v.language : ""); sel.appendChild(o); });
+    sel.value = a.some(v => (v.voice_id || v.id) === nvoice) ? nvoice : (a[0].voice_id || a[0].id);
+    nvoice = sel.value; sv("nv", nvoice);
+    stat(a.length + " ta ovoz topildi.");
+  } catch (e) { stat("Ovozlar xatosi: " + e.message); }
 }
 
 const FB = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
@@ -156,20 +160,18 @@ async function ask(text) {
   return a;
 }
 
-function speakPhone(t) {
-  return new Promise(res => {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(t);
-    u.lang = tl;
-    const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().replace("_", "-").startsWith(tl.slice(0, 2).toLowerCase()));
-    if (v) u.voice = v;
-    stat("Ovoz: " + (v ? v.name + " (" + v.lang + ")" : "standart, " + tl + " topilmadi"));
-    u.onend = u.onerror = () => res();
-    speechSynthesis.speak(u);
-  });
+function hook(a) {
+  an = fd = null;
+  if (!AC || AC.state !== "running") return;
+  try {
+    const s = AC.createMediaElementSource(a), n = AC.createAnalyser();
+    n.fftSize = 128; n.smoothingTimeConstant = .75;
+    s.connect(n); n.connect(AC.destination);
+    fd = new Uint8Array(n.frequencyBinCount); an = n;
+  } catch (e) { an = fd = null; }
 }
 async function speakNai(t) {
-  const r = await fetch(nurl, {
+  const r = await fetch(TTS + "/synthesize", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": "Bearer " + nkey },
     body: JSON.stringify({ text: t, voice_id: nvoice, language: "uz", quality: "standard" })
@@ -180,27 +182,22 @@ async function speakNai(t) {
     throw new Error(m);
   }
   const b = await r.blob();
-  stat("Ovoz: NeuronAI (" + nvoice + ")");
   await new Promise((res, rej) => {
     aud = new Audio(URL.createObjectURL(b));
+    hook(aud);
     aud.onended = res; aud.onerror = () => rej(new Error("audio oʻynamadi"));
     aud.play().catch(rej);
   });
   aud = null;
 }
 async function speak(t) {
-  const c = t.replace(/[*_#`]/g, "");
+  if (!nkey) { ready(); return; }
   setS("speak");
-  if (prov === "nai" && nkey) {
-    try { await speakNai(c); }
-    catch (e) { aud = null; stat("NeuronAI xatosi: " + e.message + ". Telefon ovozi ishlatildi."); await speakPhone(c); }
-  } else await speakPhone(c);
+  try { await speakNai(t.replace(/[*_#`]/g, "")); }
+  catch (e) { aud = null; say("Ovoz xatosi: " + e.message, "s"); }
   setS("idle");
 }
-function stopSpeak() {
-  speechSynthesis.cancel();
-  if (aud) { aud.pause(); aud.dispatchEvent(new Event("ended")); }
-}
+function stopSpeak() { if (aud) { aud.pause(); aud.dispatchEvent(new Event("ended")); } }
 
 async function turn(q) {
   say(q, "u"); setS("think");
@@ -212,8 +209,7 @@ async function turn(q) {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 function listen() {
   if (!SR) { stat("Bu brauzer nutq tanishni qoʻllamaydi. Chrome ishlating."); return; }
-  if (!key) { $("wrap").classList.add("open"); stat("Avval API kalitni kiriting."); return; }
-  speechSynthesis.cancel();
+  if (!ready()) return;
   rec = new SR(); rec.lang = "uz-UZ"; rec.interimResults = true; rec.continuous = false;
   let fin = "", err = "";
   rec.onstart = () => { setS("listen"); stat("Tinglayapman…"); };
@@ -229,26 +225,93 @@ function listen() {
 }
 
 $("orb").onclick = () => {
+  unlock();
   if (S === "think") return;
   if (S === "listen") rec.stop();
   else if (S === "speak") stopSpeak();
   else listen();
 };
-$("tf").onsubmit = e => { e.preventDefault(); const q = $("ti").value.trim(); if (!q || S === "think") return; if (!key) { $("wrap").classList.add("open"); return; } $("ti").value = ""; stopSpeak(); turn(q); };
+$("tf").onsubmit = e => {
+  e.preventDefault(); unlock();
+  const q = $("ti").value.trim();
+  if (!q || S === "think" || !ready()) return;
+  $("ti").value = ""; stopSpeak(); turn(q);
+};
 $("gear").onclick = () => $("wrap").classList.add("open");
 $("bd").onclick = $("cl").onclick = () => $("wrap").classList.remove("open");
 $("save").onclick = () => { key = $("key").value.trim(); sv("k", key); loadModels(); };
 $("model").onchange = () => { model = $("model").value; sv("m", model); };
-$("tl").onchange = () => { tl = $("tl").value; sv("tl", tl); };
-$("pv").onchange = () => { prov = $("pv").value; sv("pv", prov); $("nai").classList.toggle("on", prov === "nai"); };
 $("nk").oninput = () => { nkey = $("nk").value.trim(); sv("nk", nkey); };
-$("nv").oninput = () => { nvoice = $("nv").value.trim(); sv("nv", nvoice); };
-$("nu").oninput = () => { nurl = $("nu").value.trim(); sv("nu", nurl); };
-$("vt").onclick = () => { $("wrap").classList.remove("open"); speak("Salom, boss. Men Jarvisman. Ovoz ishlayapti."); };
+$("nk").onchange = loadVoices;
+$("nv").onchange = () => { nvoice = $("nv").value; sv("nv", nvoice); };
+$("lv").onclick = loadVoices;
+$("vt").onclick = () => { unlock(); $("wrap").classList.remove("open"); if (ready()) speak("Salom, boss. Ovoz ishlayapti."); };
 
-$("key").value = key; $("tl").value = tl; $("pv").value = prov; $("nk").value = nkey; $("nv").value = nvoice; $("nu").value = nurl;
-$("nai").classList.toggle("on", prov === "nai");
-if (key) loadModels(); else $("wrap").classList.add("open");
+/* ---- HUD ---- */
+const cv = $("hud"), cx = cv.getContext("2d"), RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
+let W = 0, sc = 1;
+function fit() {
+  const s = Math.min(innerWidth * .9, 320, innerHeight * .38), d = Math.min(devicePixelRatio || 1, 2);
+  cv.style.width = cv.style.height = s + "px"; cv.width = cv.height = W = Math.round(s * d); sc = W / 320;
+}
+addEventListener("resize", fit); fit();
+const CL = { idle: [61, 224, 255], listen: [255, 179, 71], think: [167, 139, 250], speak: [61, 224, 255] };
+let col = [61, 224, 255], lvl = 0, bar = new Float32Array(96);
+const T0 = performance.now();
+const PT = Array.from({ length: 44 }, () => ({ a: Math.random() * 6.283, r: .36 + Math.random() * .6, s: (Math.random() - .5) * .35, z: .8 + Math.random() * 1.6, p: Math.random() * 6.283 }));
+function frame(now) {
+  const t = (now - T0) / 1000 * (RM ? .25 : 1), c = W / 2, R = c * .96, kc = CL[S];
+  for (let i = 0; i < 3; i++) col[i] += (kc[i] - col[i]) * .07;
+  const rc = a => `rgba(${col[0] | 0},${col[1] | 0},${col[2] | 0},${a})`;
+  const poly = (n, r, rot, a) => { cx.strokeStyle = rc(a); cx.lineWidth = 1.8 * sc; cx.beginPath(); for (let i = 0; i <= n; i++) { const q = rot + i / n * 6.283; cx[i ? "lineTo" : "moveTo"](Math.cos(q) * r, Math.sin(q) * r); } cx.stroke(); };
+  let tg;
+  if (S === "speak") { if (an) { an.getByteFrequencyData(fd); let s = 0; for (let i = 0; i < 24; i++) s += fd[i + 1]; tg = Math.min(1, s / 24 / 200); } else tg = .35 + .2 * Math.sin(t * 9) * Math.sin(t * 2.7); }
+  else tg = S === "listen" ? .28 + .14 * Math.sin(t * 5) : S === "think" ? .2 : .08 + .04 * Math.sin(t * 1.6);
+  lvl += (tg - lvl) * .18;
+  cx.clearRect(0, 0, W, W); cx.save(); cx.translate(c, c); cx.lineCap = "round";
+  let gr = cx.createRadialGradient(0, 0, 0, 0, 0, R * .62);
+  gr.addColorStop(0, rc(.28 + lvl * .6)); gr.addColorStop(1, rc(0));
+  cx.fillStyle = gr; cx.beginPath(); cx.arc(0, 0, R * .62, 0, 6.283); cx.fill();
+  cx.save(); cx.rotate(t * .1); cx.strokeStyle = rc(.55);
+  for (let i = 0; i < 120; i++) {
+    const a = i / 120 * 6.283, L = i % 10 === 0 ? .075 : i % 5 === 0 ? .05 : .028;
+    cx.lineWidth = (i % 10 === 0 ? 2 : 1) * sc; cx.beginPath();
+    cx.moveTo(Math.cos(a) * R, Math.sin(a) * R); cx.lineTo(Math.cos(a) * R * (1 - L), Math.sin(a) * R * (1 - L)); cx.stroke();
+  }
+  cx.restore();
+  const sp = S === "think" ? 4 : S === "listen" ? 1.6 : 1;
+  for (let k = 0; k < 4; k++) {
+    const r = R * (.86 - k * .065), dir = k % 2 ? -1 : 1;
+    cx.lineWidth = (k === 1 ? 5 : 2.5) * sc; cx.strokeStyle = rc(k === 1 ? .8 : .55);
+    for (let j = 0; j < 3; j++) { const a0 = t * dir * (.35 + k * .22) * sp + j * 2.094 + k; cx.beginPath(); cx.arc(0, 0, r, a0, a0 + 1.25 - k * .2); cx.stroke(); }
+  }
+  if (S === "think") { const a = t * 5; for (let i = 0; i < 26; i++) { cx.strokeStyle = rc(.5 * (1 - i / 26)); cx.lineWidth = 7 * sc; cx.beginPath(); cx.arc(0, 0, R * .74, a - i * .05, a - i * .05 + .06); cx.stroke(); } }
+  const n = 96, r0 = R * .5; cx.lineWidth = 2.6 * sc;
+  for (let i = 0; i < n; i++) {
+    let v;
+    if (S === "speak" && an) v = Math.min(1, fd[((i < 48 ? i : 95 - i) >> 1) + 1] / 200);
+    else v = (.5 + .5 * Math.sin(t * 2.4 + i * .55) * Math.sin(t * 1.1 + i * .17)) * (lvl * 1.6 + .06);
+    bar[i] += (v - bar[i]) * .4;
+    const a = i / n * 6.283 - 1.5708, r1 = r0 + 2 * sc + bar[i] * R * .3;
+    cx.strokeStyle = rc(.35 + bar[i] * .65); cx.beginPath();
+    cx.moveTo(Math.cos(a) * r0, Math.sin(a) * r0); cx.lineTo(Math.cos(a) * r1, Math.sin(a) * r1); cx.stroke();
+  }
+  cx.strokeStyle = rc(.6); cx.lineWidth = 1.5 * sc; cx.beginPath(); cx.arc(0, 0, R * .44, 0, 6.283); cx.stroke();
+  poly(6, R * .34, t * .5, .7); poly(3, R * .22, -t * .8, .9);
+  gr = cx.createRadialGradient(0, 0, 0, 0, 0, R * .2 * (1 + lvl * .7));
+  gr.addColorStop(0, "#fff"); gr.addColorStop(.35, rc(.95)); gr.addColorStop(1, rc(0));
+  cx.fillStyle = gr; cx.beginPath(); cx.arc(0, 0, R * .3, 0, 6.283); cx.fill();
+  for (const p of PT) { const a = p.a + t * p.s, r = p.r * R; cx.fillStyle = rc(.25 + .35 * Math.sin(t * 2 + p.p)); cx.beginPath(); cx.arc(Math.cos(a) * r, Math.sin(a) * r, p.z * sc, 0, 6.283); cx.fill(); }
+  cx.restore();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+setInterval(() => { $("tel").textContent = new Date().toTimeString().slice(0, 8) + " · NEURONAI"; }, 1000);
+
+$("key").value = key; $("nk").value = nkey;
+$("nv").innerHTML = '<option value="' + nvoice + '">' + nvoice + '</option>';
+loadVoices();
+if (key) loadModels(); if (!key || !nkey) $("wrap").classList.add("open");
 say("Salom, boss. Aylanani bosing va gapiring, yoki pastga yozing.", "s");
 </script>
 </body>
