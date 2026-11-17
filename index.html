@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jarvis</title>
+<style>
+:root{--bg:#0a1620;--sf:#11222f;--ln:#1f3a4d;--tx:#dff3fb;--mu:#7e9aaa;--cy:#3de0ff;--am:#ffb347}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px}
+h1{font-size:22px;font-weight:600;letter-spacing:.02em;margin:0}
+button,input,select{font:inherit;color:var(--tx)}
+.btn{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:8px 14px}
+#set{display:none;flex-direction:column;gap:10px;padding:0 18px 14px;border-bottom:1px solid var(--ln)}
+#set.open{display:flex}
+#set label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mu)}
+input[type=password],select{background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px;width:100%}
+#log{flex:1;overflow-y:auto;padding:12px 18px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap}
+.u{align-self:flex-end;background:var(--ln)}
+.j{align-self:flex-start;background:var(--sf);border-left:2px solid var(--cy)}
+.s{align-self:center;color:var(--mu);font-size:14px;text-align:center}
+footer{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 18px 18px}
+#stat{min-height:22px;color:var(--mu);font-size:14px;text-align:center}
+#mic{width:96px;height:96px;border-radius:50%;border:2px solid var(--cy);background:radial-gradient(circle,var(--cy) 0 18%,transparent 19%),radial-gradient(circle,transparent 0 40%,#3de0ff33 41% 46%,transparent 47%),var(--sf);box-shadow:0 0 24px #3de0ff44}
+#mic.on{border-color:var(--am);background:radial-gradient(circle,var(--am) 0 18%,transparent 19%),radial-gradient(circle,transparent 0 40%,#ffb34744 41% 46%,transparent 47%),var(--sf);animation:p 1.2s ease-in-out infinite}
+@keyframes p{50%{box-shadow:0 0 0 14px #ffb34722}}
+@media (prefers-reduced-motion:reduce){#mic.on{animation:none}}
+.chk{display:flex;gap:8px;align-items:center;color:var(--mu);font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>Jarvis</h1><button class="btn" id="gear">Sozlamalar</button></header>
+<div id="set">
+  <label>Gemini API kaliti<input id="key" type="password" autocomplete="off" placeholder="AIza..."></label>
+  <button class="btn" id="save">Saqlash va modellarni yuklash</button>
+  <label>Model<select id="model"><option>gemini-flash-latest</option></select></label>
+  <label>Javob ovozi tili
+    <select id="tl">
+      <option value="uz-UZ">Oʻzbek (uz-UZ)</option>
+      <option value="tr-TR">Turk (tr-TR)</option>
+      <option value="ru-RU">Rus (ru-RU)</option>
+      <option value="en-US">Ingliz (en-US)</option>
+    </select>
+  </label>
+</div>
+<div id="log"></div>
+<footer>
+  <div id="stat"></div>
+  <button id="mic" aria-label="Gapirish"></button>
+  <label class="chk"><input type="checkbox" id="auto"> Doimiy suhbat</label>
+</footer>
+<script>
+const $ = id => document.getElementById(id);
+const LS = window.localStorage;
+const API = "https://generativelanguage.googleapis.com/v1beta/";
+const SYS = "Sen Jarvis — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber.";
+let key = LS.getItem("k") || "";
+let model = LS.getItem("m") || "gemini-flash-latest";
+let tl = LS.getItem("tl") || "uz-UZ";
+let hist = [], rec = null, listening = false, busy = false;
+
+function say(t, c) {
+  const d = document.createElement("div");
+  d.className = "m " + c; d.textContent = t;
+  $("log").appendChild(d); $("log").scrollTop = 1e9;
+}
+function stat(t) { $("stat").textContent = t; }
+
+async function loadModels() {
+  if (!key) return;
+  try {
+    const r = await fetch(API + "models?pageSize=200", { headers: { "x-goog-api-key": key } });
+    const j = await r.json();
+    if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
+    const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace("models/", ""));
+    const sel = $("model"); sel.innerHTML = "";
+    ms.forEach(n => { const o = document.createElement("option"); o.value = o.textContent = n; sel.appendChild(o); });
+    sel.value = ms.includes(model) ? model
+      : (ms.find(n => n === "gemini-flash-latest") || ms.find(n => /flash/.test(n) && !/lite|image|tts|live|audio/.test(n)) || ms[0]);
+    model = sel.value; LS.setItem("m", model);
+    stat("Kalit qabul qilindi. Modellar yuklandi.");
+  } catch (e) { stat("Kalit yoki model xatosi: " + e.message); }
+}
+
+async function ask(text) {
+  hist.push({ role: "user", parts: [{ text }] });
+  hist = hist.slice(-16);
+  while (hist.length && hist[0].role !== "user") hist.shift();
+  const r = await fetch(API + "models/" + model + ":generateContent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS }] }, contents: hist })
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
+  const a = ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [])
+    .map(p => p.text || "").join("").trim() || "(javob kelmadi)";
+  hist.push({ role: "model", parts: [{ text: a }] });
+  return a;
+}
+
+function speak(t) {
+  return new Promise(res => {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t.replace(/[*_#`]/g, ""));
+    u.lang = tl;
+    const v = speechSynthesis.getVoices().find(v => v.lang.toLowerCase().replace("_", "-").startsWith(tl.slice(0, 2).toLowerCase()));
+    if (v) u.voice = v;
+    stat("Gapiryapti: " + (v ? v.name + " (" + v.lang + ")" : "standart ovoz, " + tl + " ovozi topilmadi"));
+    u.onend = u.onerror = () => res();
+    speechSynthesis.speak(u);
+  });
+}
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function listen() {
+  if (!SR) { stat("Bu brauzer nutq tanishni qoʻllamaydi. Chrome ishlating."); return; }
+  if (!key) { $("set").classList.add("open"); stat("Avval API kalitni kiriting."); return; }
+  speechSynthesis.cancel();
+  rec = new SR(); rec.lang = "uz-UZ"; rec.interimResults = true; rec.continuous = false;
+  let fin = "", err = "";
+  rec.onstart = () => { listening = true; $("mic").classList.add("on"); stat("Tinglayapman…"); };
+  rec.onresult = e => { let t = ""; for (const r of e.results) t += r[0].transcript; fin = t; stat("… " + t); };
+  rec.onerror = e => { err = (e.error === "no-speech" || e.error === "aborted") ? "" : e.error; if (err) stat("Nutq xatosi: " + err); };
+  rec.onend = async () => {
+    listening = false; $("mic").classList.remove("on");
+    if (err) return;
+    const q = fin.trim();
+    if (!q) { if ($("auto").checked) listen(); else stat("Hech narsa eshitilmadi."); return; }
+    say(q, "u"); stat("Oʻylayapman…"); busy = true;
+    try {
+      const a = await ask(q); say(a, "j"); await speak(a);
+    } catch (e) { say("Xato: " + e.message, "s"); busy = false; return; }
+    busy = false;
+    if ($("auto").checked) listen(); else stat("Tayyor.");
+  };
+  rec.start();
+}
+
+$("mic").onclick = () => {
+  if (busy) return;
+  if (listening) rec.stop();
+  else if (speechSynthesis.speaking) speechSynthesis.cancel();
+  else listen();
+};
+$("gear").onclick = () => $("set").classList.toggle("open");
+$("save").onclick = () => { key = $("key").value.trim(); LS.setItem("k", key); loadModels(); };
+$("model").onchange = () => { model = $("model").value; LS.setItem("m", model); };
+$("tl").onchange = () => { tl = $("tl").value; LS.setItem("tl", tl); };
+
+$("key").value = key; $("tl").value = tl;
+if (key) loadModels(); else $("set").classList.add("open");
+say("Salom, boss. Kalitni kiriting, keyin aylanani bosing va gapiring.", "s");
+</script>
+</body>
+</html>
