@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050b12">
 <title>4eKhSAI</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{--bg:#050b12;--gl:#ffffff0d;--ln:#ffffff1a;--tx:#e6f6fd;--mu:#7f9bad}
-body{--c:#3de0ff}
-body[data-s=listen]{--c:#ffb347}
+body{--c:#2de2c8}
+body[data-s=listen]{--c:#f5c26b}
 body[data-s=think]{--c:#a78bfa}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(120% 70% at 50% 20%,#0f2c46 0,var(--bg) 62%);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
+body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(120% 70% at 50% 20%,#0b2f3b 0,var(--bg) 62%);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/32px 100%;mask-image:radial-gradient(75% 60% at 50% 30%,#000,transparent)}
 .scan{position:fixed;left:0;right:0;top:-140px;height:140px;pointer-events:none;background:linear-gradient(transparent,#3de0ff14,transparent);animation:sc 8s linear infinite}
 @keyframes sc{to{transform:translateY(120vh)}}
@@ -26,20 +29,38 @@ header{position:relative;display:flex;align-items:center;justify-content:space-b
 @keyframes bl{50%{opacity:.35}}
 .ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gl);border:1px solid var(--ln);cursor:pointer}
 .ic svg{width:20px;height:20px;stroke:var(--tx);fill:none;stroke-width:2;stroke-linecap:round}
-main{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center}
-#orb{flex:none;border:0;background:none;padding:0;margin:4px 0 0;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#vv,#cv{position:relative;flex:1;min-height:0;display:none;flex-direction:column;padding-bottom:78px}
+body[data-v=vv] #vv{display:flex;align-items:center}
+body[data-v=cv] #cv{display:flex}
+#orb{flex:none;border:0;background:none;padding:0;margin:2px 0 0;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 #tel{flex:none;font:12px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;color:var(--c);opacity:.8;margin-top:2px}
-#stat{flex:none;min-height:22px;margin:6px 18px 2px;font-size:13px;color:var(--mu);text-align:center}
-#log{flex:1;min-height:0;width:100%;overflow-y:auto;padding:8px 18px 10px;display:flex;flex-direction:column;gap:10px;mask-image:linear-gradient(transparent,#000 22px)}
-.m{max-width:88%;padding:10px 14px;border-radius:14px;white-space:pre-wrap;border:1px solid var(--ln);backdrop-filter:blur(10px)}
-.u{align-self:flex-end;background:#3de0ff1a;border-right:2px solid #3de0ff}
-.j{align-self:flex-start;background:var(--gl);border-left:2px solid var(--c)}
-.s{align-self:center;color:var(--mu);font-size:14px;text-align:center;border:0;background:none}
-footer{position:relative;display:flex;flex-direction:column;gap:8px;padding:6px 20px 16px}
-#tf{display:flex;gap:8px}
-#ti{flex:1;min-width:0;background:var(--gl);border:1px solid var(--ln);border-radius:14px;padding:11px 14px;outline:0}
+#stat{flex:none;min-height:20px;margin:4px 18px 0;font-size:12px;color:var(--mu);text-align:center}
+#cap{flex:1;min-height:0;width:100%;max-width:520px;padding:6px 26px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:8px;overflow:hidden}
+#cq{color:var(--mu);font-size:15px;min-height:22px}
+#ca{font-size:20px;line-height:1.4;font-weight:500;max-height:7.5em;overflow:hidden}
+.chk{flex:none;display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mu);font-size:14px;padding:4px 0}
+#log{flex:1;min-height:0;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px;mask-image:linear-gradient(transparent,#000 18px)}
+.m{max-width:86%;display:flex;flex-direction:column;gap:4px}
+.bt{padding:10px 14px;border-radius:18px;white-space:pre-wrap;word-break:break-word;border:1px solid var(--ln);backdrop-filter:blur(10px)}
+.u{align-self:flex-end;align-items:flex-end}
+.u .bt{background:linear-gradient(135deg,#2de2c828,#2de2c80d);border-color:#2de2c844;border-bottom-right-radius:6px}
+.j{align-self:flex-start}
+.j .bt{background:var(--gl);border-bottom-left-radius:6px;border-left:2px solid var(--c)}
+.s{align-self:center;color:var(--mu);font-size:13px;text-align:center}
+.mf{display:flex;gap:12px;font-size:11px;color:var(--mu);padding:0 6px}
+.mf button{background:none;border:0;color:var(--c);padding:0;font-size:11px;cursor:pointer}
+.dt i{display:inline-block;width:6px;height:6px;margin:3px 2px;border-radius:50%;background:var(--c);animation:dt 1s ease-in-out infinite}
+.dt i:nth-child(2){animation-delay:.15s}.dt i:nth-child(3){animation-delay:.3s}
+@keyframes dt{50%{transform:translateY(-4px);opacity:.35}}
+#sg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 16px 10px}
+#sg button{background:var(--gl);border:1px solid var(--ln);border-radius:99px;padding:8px 14px;font-size:14px;color:var(--tx);cursor:pointer}
+#tf{display:flex;gap:8px;align-items:center;padding:6px 16px 4px}
+#ti{flex:1;min-width:0;background:var(--gl);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;outline:0}
 #ti:focus{border-color:var(--c)}
-.chk{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mu);font-size:14px}
+.rd{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--mu);gap:2px}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:5px;border-radius:99px;background:#0b1824d9;border:1px solid var(--ln);backdrop-filter:blur(14px);z-index:5}
+nav button{border:0;background:none;padding:10px 26px;border-radius:99px;color:var(--mu);font-weight:600;cursor:pointer;transition:.25s}
+nav button.on{background:var(--c);color:#04121a}
 #bd{position:fixed;inset:0;background:#0009;opacity:0;pointer-events:none;transition:.25s}
 #set{position:fixed;left:0;right:0;bottom:0;max-height:88dvh;overflow-y:auto;background:#0b1824;border-top:1px solid var(--ln);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;transform:translateY(105%);transition:.3s}
 .open #set{transform:none}.open #bd{opacity:1;pointer-events:auto}
@@ -49,26 +70,29 @@ footer{position:relative;display:flex;flex-direction:column;gap:8px;padding:6px 
 #set option{background:#0b1824}
 .btn{background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;cursor:pointer}
 .hd{display:flex;justify-content:space-between;align-items:center}
-@media (prefers-reduced-motion:reduce){.scan,.brand,.chip::before{animation:none}}
+@media (prefers-reduced-motion:reduce){.scan,.brand,.chip::before,.dt i{animation:none}}
 </style>
 </head>
-<body data-s="idle">
+<body data-s="idle" data-v="vv">
 <div class="scan"></div><div class="fr"></div>
 <header>
   <div class="brand">4eKhSAI</div>
   <div class="chip" id="chip">Tayyor</div>
   <button class="ic" id="gear" aria-label="Sozlamalar"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
 </header>
-<main>
+<div id="stat"></div>
+<main id="vv">
   <button id="orb" aria-label="Gapirish"><canvas id="hud"></canvas></button>
   <div id="tel"></div>
-  <div id="stat"></div>
-  <div id="log"></div>
-</main>
-<footer>
-  <form id="tf"><input id="ti" type="text" placeholder="Yoki shu yerga yozing…" autocomplete="off"><button class="ic" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <div id="cap"><div id="cq"></div><div id="ca"></div></div>
   <label class="chk"><input type="checkbox" id="auto"> Doimiy suhbat</label>
-</footer>
+</main>
+<section id="cv">
+  <div id="log"></div>
+  <div id="sg"><button>Toshkentda ob-havo qanday?</button><button>Soat nechchi?</button><button>10 daqiqaga taymer qoʻy</button><button>Menga bir qiziq fakt ayt</button></div>
+  <form id="tf"><input id="ti" type="text" placeholder="Xabar yozing…" autocomplete="off"><label class="rd"><input type="checkbox" id="rd">ovoz</label><button class="ic" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+</section>
+<nav id="nv"><button data-v="vv" class="on">Ovoz</button><button data-v="cv">Chat</button></nav>
 <div id="wrap"><div id="bd"></div>
 <div id="set">
   <div class="hd"><h2>Sozlamalar</h2><button class="btn" id="cl">Yopish</button></div>
@@ -79,6 +103,9 @@ footer{position:relative;display:flex;flex-direction:column;gap:8px;padding:6px 
   <label>Ovoz<select id="nv"></select></label>
   <button class="btn" id="lv">Ovozlarni yuklash</button>
   <button class="btn" id="vt">Ovozni sinash</button>
+  <button class="btn" id="mm">Xotira</button>
+  <button class="btn" id="cc">Suhbatni tozalash</button>
+  <button class="btn" id="inst" style="display:none">Ilova sifatida oʻrnatish</button>
 </div></div>
 <script>
 const $ = id => document.getElementById(id), LS = window.localStorage;
@@ -86,19 +113,36 @@ const API = "https://generativelanguage.googleapis.com/v1beta/", TTS = "https://
 const SYS = "Sen 4eKhSAI — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber. Ismingni faqat soʻralganda ayt.";
 const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
 let key = g("k", ""), model = g("m", "gemini-flash-latest"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
-let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null;
+let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null, SP = null, mem = [];
+try { mem = JSON.parse(g("mem", "[]")); } catch (e) {}
+const sys = () => SYS + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
+const upd = () => { $("mm").textContent = "Xotirani tozalash (" + mem.length + ")"; };
 const LBL = { idle: "Tayyor", listen: "Tinglayapman", think: "Oʻylayapman", speak: "Gapiryapman" };
 function setS(s) { S = s; document.body.dataset.s = s; $("chip").textContent = LBL[s]; }
 function stat(t) { $("stat").textContent = t; }
-function say(t, c) {
-  const d = document.createElement("div");
-  d.className = "m " + c; $("log").appendChild(d);
-  if (c === "j") { let i = 0; const iv = setInterval(() => { d.textContent = t.slice(0, i += 2); $("log").scrollTop = 1e9; if (i >= t.length) clearInterval(iv); }, 22); }
-  else { d.textContent = t; $("log").scrollTop = 1e9; }
+let chat = []; try { chat = JSON.parse(g("chat", "[]")); } catch (e) {}
+const saveChat = () => sv("chat", JSON.stringify(chat.slice(-60)));
+function msg(c, t, ts) {
+  const w = document.createElement("div"); w.className = "m " + c;
+  if (c === "s") { w.textContent = t; $("log").appendChild(w); $("log").scrollTop = 1e9; return w; }
+  const b = document.createElement("div"); b.className = "bt"; b.textContent = t; w.appendChild(b);
+  const f = document.createElement("div"); f.className = "mf";
+  f.innerHTML = "<span>" + new Date(ts || Date.now()).toTimeString().slice(0, 5) + "</span>";
+  if (c === "j") {
+    const a = document.createElement("button"); a.textContent = "Oʻqish"; a.onclick = () => { stopSpeak(); speak(b.textContent); };
+    const k = document.createElement("button"); k.textContent = "Nusxa";
+    k.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(b.textContent); k.textContent = "Nusxalandi"; setTimeout(() => k.textContent = "Nusxa", 1200); };
+    f.append(a, k);
+  }
+  w.appendChild(f); $("log").appendChild(w); $("log").scrollTop = 1e9; $("sg").style.display = "none"; return b;
 }
-function ready() {
-  if (key && nkey) return true;
-  $("wrap").classList.add("open"); stat("Avval Gemini va NeuronAI kalitlarini kiriting."); return false;
+function say(t, c) {
+  if (c === "s") { stat(t); return msg("s", t); }
+  chat.push({ r: c, t, ts: Date.now() }); saveChat(); return msg(c, t);
+}
+function ready(n = true) {
+  if (key && (!n || nkey)) return true;
+  $("wrap").classList.add("open"); stat(key ? "NeuronAI kalitini kiriting." : "Avval Gemini kalitini kiriting."); return false;
 }
 function unlock() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }
 
@@ -134,30 +178,90 @@ async function loadVoices() {
 }
 
 const FB = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
-async function gen(m) {
-  const r = await fetch(API + "models/" + m + ":generateContent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: SYS }] }, contents: hist })
-  });
-  const j = await r.json();
-  if (!r.ok) { const e = new Error((j.error && j.error.message) || r.status); e.busy = [429, 500, 503].includes(r.status); throw e; }
-  return j;
+const textOf = j => ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || []).map(p => p.text || "").join("").trim();
+const TOOLS = [{ functionDeclarations: [
+  { name: "get_time", description: "Hozirgi sana, vaqt va vaqt mintaqasini qaytaradi" },
+  { name: "get_weather", description: "Shaharning hozirgi ob-havosi (weather_code — WMO kodi)", parameters: { type: "object", properties: { city: { type: "string", description: "Shahar nomi lotin yozuvida, masalan Tashkent" } }, required: ["city"] } },
+  { name: "set_timer", description: "Taymer qoʻyadi", parameters: { type: "object", properties: { seconds: { type: "integer" }, label: { type: "string" } }, required: ["seconds"] } },
+  { name: "remember", description: "Foydalanuvchi haqidagi muhim faktni uzoq muddatga eslab qoladi", parameters: { type: "object", properties: { fact: { type: "string" } }, required: ["fact"] } },
+  { name: "search_web", description: "Internetdan yangi maʼlumot qidiradi (yangiliklar, narxlar, faktlar)", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } }
+] }];
+function alarm(l) {
+  say("Taymer: " + l, "s");
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
+  if (nkey && S === "idle") speak("Boss, taymer tugadi. " + l);
 }
-async function ask(text) {
-  hist.push({ role: "user", parts: [{ text }] });
-  hist = hist.slice(-16);
-  while (hist.length && hist[0].role !== "user") hist.shift();
-  let j, last;
-  for (const m of [model, ...FB.filter(x => x !== model)]) {
-    try { j = await gen(m); break; }
-    catch (e) { last = e; if (!e.busy) break; stat("Band, zaxira model sinayapman…"); }
+const FN = {
+  get_time: async () => ({ now: new Date().toString() }),
+  get_weather: async ({ city }) => {
+    const a = await (await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&name=" + encodeURIComponent(city))).json();
+    const p = a.results && a.results[0]; if (!p) return { error: "shahar topilmadi" };
+    const w = await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + p.latitude + "&longitude=" + p.longitude + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto")).json();
+    return { city: p.name, country: p.country, ...w.current };
+  },
+  set_timer: async ({ seconds, label }) => { const n = Math.max(1, Math.min(+seconds || 0, 86400)); setTimeout(() => alarm(label || "Vaqt tugadi"), n * 1000); return { ok: true, seconds: n }; },
+  remember: async ({ fact }) => { mem = [...mem, String(fact).slice(0, 200)].slice(-30); sv("mem", JSON.stringify(mem)); upd(); return { ok: true }; },
+  search_web: async ({ query }) => {
+    const r = await fetch(API + "models/gemini-2.5-flash:generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+      body: JSON.stringify({ tools: [{ google_search: {} }], contents: [{ role: "user", parts: [{ text: query + "\n\nQisqa va aniq javob ber (3-4 jumla)." }] }] }) });
+    const j = await r.json(); if (!r.ok) return { error: (j.error && j.error.message) || r.status };
+    return { answer: textOf(j) };
   }
-  if (!j) { hist.pop(); throw last; }
-  const a = ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [])
-    .map(p => p.text || "").join("").trim() || "(javob kelmadi)";
-  hist.push({ role: "model", parts: [{ text: a }] });
-  return a;
+};
+
+async function* sse(r) {
+  const rd = r.body.getReader(), dec = new TextDecoder(); let b = "";
+  for (;;) {
+    const { done, value } = await rd.read(); if (done) break;
+    b += dec.decode(value, { stream: true }); let i;
+    while ((i = b.indexOf("\n")) >= 0) {
+      const l = b.slice(0, i).trim(); b = b.slice(i + 1);
+      if (l.startsWith("data:")) { try { yield JSON.parse(l.slice(5)); } catch (_) {} }
+    }
+  }
+}
+async function streamOnce(m, contents, onText) {
+  const r = await fetch(API + "models/" + m + ":streamGenerateContent?alt=sse", {
+    method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: sys() }] }, tools: TOOLS, contents })
+  });
+  if (!r.ok) {
+    let j = {}; try { j = await r.json(); } catch (_) {}
+    const e = new Error((j.error && j.error.message) || r.status); e.busy = [429, 500, 503].includes(r.status); throw e;
+  }
+  const parts = [];
+  for await (const j of sse(r)) {
+    const ps = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
+    for (const p of ps) { parts.push(p); if (p.text && !p.thought) onText(p.text); }
+  }
+  return parts;
+}
+async function answer(q, onText) {
+  const base = [...hist, { role: "user", parts: [{ text: q }] }], steps = []; let all = "";
+  for (let n = 0; n < 4; n++) {
+    const contents = base.concat(steps); let parts, last;
+    for (const m of [model, ...FB.filter(x => x !== model)]) {
+      let started = false;
+      try { parts = await streamOnce(m, contents, t => { started = true; all += t; onText(t); }); break; }
+      catch (e) { last = e; if (!e.busy || started) throw e; stat("Band, zaxira model sinayapman…"); }
+    }
+    if (!parts) throw last;
+    const calls = parts.filter(p => p.functionCall);
+    if (!calls.length) {
+      hist = [...base, { role: "model", parts: [{ text: all || "..." }] }].slice(-16);
+      while (hist.length && hist[0].role !== "user") hist.shift();
+      return all;
+    }
+    steps.push({ role: "model", parts });
+    const res = [];
+    for (const c of calls) {
+      const f = c.functionCall; stat("Vosita: " + f.name + "…"); let out;
+      try { out = await FN[f.name](f.args || {}); } catch (e) { out = { error: e.message }; }
+      res.push({ functionResponse: { name: f.name, response: out } });
+    }
+    steps.push({ role: "user", parts: res });
+  }
+  throw new Error("Vositalar tsikli tugamadi");
 }
 
 function hook(a) {
@@ -170,7 +274,17 @@ function hook(a) {
     fd = new Uint8Array(n.frequencyBinCount); an = n;
   } catch (e) { an = fd = null; }
 }
-async function speakNai(t) {
+function takeSentences(buf, fin) {
+  const out = [], re = /[.!?…]+["”’)]*(\s+|$)|\n+/g; let last = 0, m;
+  while ((m = re.exec(buf))) {
+    if (!fin && !/\s$/.test(m[0])) break;
+    const end = m.index + m[0].length, s = buf.slice(last, end).trim();
+    if (s.length >= 24) { out.push(s); last = end; }
+  }
+  if (fin) { const t = buf.slice(last).trim(); if (t) out.push(t); last = buf.length; }
+  return [out, buf.slice(last)];
+}
+async function fetchTTS(t) {
   const r = await fetch(TTS + "/synthesize", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": "Bearer " + nkey },
@@ -181,29 +295,55 @@ async function speakNai(t) {
     try { const j = await r.json(); m = (j.error && (j.error.message || j.error.code)) || j.message || m; } catch (_) {}
     throw new Error(m);
   }
-  const b = await r.blob();
-  await new Promise((res, rej) => {
-    aud = new Audio(URL.createObjectURL(b));
-    hook(aud);
-    aud.onended = res; aud.onerror = () => rej(new Error("audio oʻynamadi"));
-    aud.play().catch(rej);
-  });
-  aud = null;
+  return r.blob();
 }
+function play(b) {
+  return new Promise((res, rej) => {
+    aud = new Audio(URL.createObjectURL(b)); hook(aud);
+    aud.onended = res; aud.onerror = () => rej(new Error("audio oʻynamadi"));
+    setS("speak"); aud.play().catch(rej);
+  });
+}
+function stopAud() { if (aud) { aud.pause(); aud.dispatchEvent(new Event("ended")); } }
+function newSpeaker() {
+  const q = []; let done = false, stopped = false, wake = null, shown = false;
+  const run = (async () => {
+    for (;;) {
+      while (!q.length) { if (done) return; await new Promise(r => wake = r); }
+      const p = q.shift(); if (stopped) continue;
+      try { const b = await p; if (!stopped) { await play(b); aud = null; } }
+      catch (e) { aud = null; if (!shown) { shown = true; say("Ovoz xatosi: " + e.message, "s"); } }
+    }
+  })();
+  return {
+    run, get stopped() { return stopped; },
+    add(t) { if (stopped) return; const p = fetchTTS(t); p.catch(() => {}); q.push(p); wake && wake(); },
+    end() { done = true; wake && wake(); },
+    stop() { stopped = true; q.length = 0; stopAud(); wake && wake(); }
+  };
+}
+const stopSpeak = () => { SP && SP.stop(); };
 async function speak(t) {
   if (!nkey) { ready(); return; }
-  setS("speak");
-  try { await speakNai(t.replace(/[*_#`]/g, "")); }
-  catch (e) { aud = null; say("Ovoz xatosi: " + e.message, "s"); }
-  setS("idle");
+  const sp = SP = newSpeaker(); sp.add(t); sp.end(); await sp.run;
+  if (!sp.stopped) setS("idle");
 }
-function stopSpeak() { if (aud) { aud.pause(); aud.dispatchEvent(new Event("ended")); } }
 
-async function turn(q) {
-  say(q, "u"); setS("think");
-  try { const a = await ask(q); say(a, "j"); await speak(a); }
-  catch (e) { say("Xato: " + e.message, "s"); setS("idle"); return; }
-  if ($("auto").checked) listen(); else stat("");
+async function turn(q, voice = true) {
+  say(q, "u"); $("cq").textContent = q; $("ca").textContent = ""; setS("think");
+  const d = msg("j", ""); d.innerHTML = '<span class="dt"><i></i><i></i><i></i></span>';
+  const sp = SP = newSpeaker(); let buf = "", full = "";
+  const feed = fin => { if (!voice) return; const [ss, rest] = takeSentences(buf, fin); buf = rest; ss.forEach(s => sp.add(s.replace(/[*_#`]/g, ""))); };
+  try {
+    await answer(q, t => { full += t; buf += t; d.textContent = full; $("ca").textContent = full.slice(-220); $("log").scrollTop = 1e9; feed(false); });
+    if (!full.trim()) d.textContent = "(javob kelmadi)";
+    feed(true);
+  } catch (e) { if (!full) d.parentElement.remove(); say("Xato: " + e.message, "s"); }
+  if (full.trim()) { chat.push({ r: "j", t: full, ts: Date.now() }); saveChat(); }
+  sp.end(); await sp.run;
+  if (sp.stopped) return;
+  setS("idle");
+  if (voice && $("auto").checked) listen(); else if (!voice) stat("");
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -212,8 +352,8 @@ function listen() {
   if (!ready()) return;
   rec = new SR(); rec.lang = "uz-UZ"; rec.interimResults = true; rec.continuous = false;
   let fin = "", err = "";
-  rec.onstart = () => { setS("listen"); stat("Tinglayapman…"); };
-  rec.onresult = e => { let t = ""; for (const r of e.results) t += r[0].transcript; fin = t; stat("… " + t); };
+  rec.onstart = () => { setS("listen"); stat("Tinglayapman…"); $("cq").textContent = ""; $("ca").textContent = ""; };
+  rec.onresult = e => { let t = ""; for (const r of e.results) t += r[0].transcript; fin = t; $("cq").textContent = t; };
   rec.onerror = e => { err = (e.error === "no-speech" || e.error === "aborted") ? "" : e.error; if (err) stat("Nutq xatosi: " + err); };
   rec.onend = () => {
     if (err) { setS("idle"); return; }
@@ -228,15 +368,22 @@ $("orb").onclick = () => {
   unlock();
   if (S === "think") return;
   if (S === "listen") rec.stop();
-  else if (S === "speak") stopSpeak();
+  else if (S === "speak") { stopSpeak(); setS("idle"); }
   else listen();
 };
 $("tf").onsubmit = e => {
   e.preventDefault(); unlock();
-  const q = $("ti").value.trim();
-  if (!q || S === "think" || !ready()) return;
-  $("ti").value = ""; stopSpeak(); turn(q);
+  const q = $("ti").value.trim(), v = $("rd").checked;
+  if (!q || S === "think" || !ready(v)) return;
+  $("ti").value = ""; stopSpeak(); turn(q, v);
 };
+$("sg").onclick = e => { const b = e.target.closest("button"); if (b) { $("ti").value = b.textContent; $("tf").requestSubmit(); } };
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.body.dataset.v = b.dataset.v;
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  if (b.dataset.v === "cv") $("log").scrollTop = 1e9;
+});
+$("cc").onclick = () => { if (confirm("Suhbat tozalansinmi?")) { chat = []; hist = []; saveChat(); $("log").innerHTML = ""; $("sg").style.display = ""; } };
 $("gear").onclick = () => $("wrap").classList.add("open");
 $("bd").onclick = $("cl").onclick = () => $("wrap").classList.remove("open");
 $("save").onclick = () => { key = $("key").value.trim(); sv("k", key); loadModels(); };
@@ -247,16 +394,23 @@ $("nv").onchange = () => { nvoice = $("nv").value; sv("nv", nvoice); };
 $("lv").onclick = loadVoices;
 $("vt").onclick = () => { unlock(); $("wrap").classList.remove("open"); if (ready()) speak("Salom, boss. Ovoz ishlayapti."); };
 
+$("mm").onclick = () => { if (confirm("Xotira tozalansinmi?")) { mem = []; sv("mem", "[]"); upd(); } };
+let dp = null;
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); dp = e; $("inst").style.display = ""; });
+$("inst").onclick = async () => { if (dp) { dp.prompt(); await dp.userChoice; dp = null; $("inst").style.display = "none"; } };
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+upd();
+
 /* ---- HUD ---- */
 const cv = $("hud"), cx = cv.getContext("2d"), RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
 let W = 0, sc = 1;
 function fit() {
-  const s = Math.min(innerWidth * .9, 320, innerHeight * .38), d = Math.min(devicePixelRatio || 1, 2);
+  const s = Math.min(innerWidth * .94, 380, innerHeight * .44), d = Math.min(devicePixelRatio || 1, 2);
   cv.style.width = cv.style.height = s + "px"; cv.width = cv.height = W = Math.round(s * d); sc = W / 320;
 }
 addEventListener("resize", fit); fit();
-const CL = { idle: [61, 224, 255], listen: [255, 179, 71], think: [167, 139, 250], speak: [61, 224, 255] };
-let col = [61, 224, 255], lvl = 0, bar = new Float32Array(96);
+const CL = { idle: [45, 226, 200], listen: [245, 194, 107], think: [167, 139, 250], speak: [45, 226, 200] };
+let col = [45, 226, 200], lvl = 0, bar = new Float32Array(96);
 const T0 = performance.now();
 const PT = Array.from({ length: 44 }, () => ({ a: Math.random() * 6.283, r: .36 + Math.random() * .6, s: (Math.random() - .5) * .35, z: .8 + Math.random() * 1.6, p: Math.random() * 6.283 }));
 function frame(now) {
@@ -297,7 +451,10 @@ function frame(now) {
     cx.moveTo(Math.cos(a) * r0, Math.sin(a) * r0); cx.lineTo(Math.cos(a) * r1, Math.sin(a) * r1); cx.stroke();
   }
   cx.strokeStyle = rc(.6); cx.lineWidth = 1.5 * sc; cx.beginPath(); cx.arc(0, 0, R * .44, 0, 6.283); cx.stroke();
-  poly(6, R * .34, t * .5, .7); poly(3, R * .22, -t * .8, .9);
+  poly(4, R * .36, t * .3, .75); poly(4, R * .36, t * .3 + .7854, .75); poly(4, R * .24, -t * .5, .9); poly(4, R * .24, -t * .5 + .7854, .9);
+  cx.save(); cx.rotate(-t * .06); cx.strokeStyle = rc(.4); cx.lineWidth = 1.2 * sc;
+  for (let i = 0; i < 16; i++) { cx.rotate(6.2832 / 16); cx.beginPath(); cx.moveTo(R * .6, 0); cx.quadraticCurveTo(R * .66, R * .04, R * .73, 0); cx.quadraticCurveTo(R * .66, -R * .04, R * .6, 0); cx.stroke(); }
+  cx.restore();
   gr = cx.createRadialGradient(0, 0, 0, 0, 0, R * .2 * (1 + lvl * .7));
   gr.addColorStop(0, "#fff"); gr.addColorStop(.35, rc(.95)); gr.addColorStop(1, rc(0));
   cx.fillStyle = gr; cx.beginPath(); cx.arc(0, 0, R * .3, 0, 6.283); cx.fill();
@@ -312,7 +469,11 @@ $("key").value = key; $("nk").value = nkey;
 $("nv").innerHTML = '<option value="' + nvoice + '">' + nvoice + '</option>';
 loadVoices();
 if (key) loadModels(); if (!key || !nkey) $("wrap").classList.add("open");
-say("Salom, boss. Aylanani bosing va gapiring, yoki pastga yozing.", "s");
+chat.forEach(m => msg(m.r, m.t, m.ts));
+hist = chat.slice(-10).map(m => ({ role: m.r === "u" ? "user" : "model", parts: [{ text: m.t }] }));
+while (hist.length && hist[0].role !== "user") hist.shift();
+if (chat.length) $("sg").style.display = "none";
+$("ca").textContent = "Salom, boss. Aylanani bosing va gapiring.";
 </script>
 </body>
 </html>
