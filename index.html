@@ -7,116 +7,160 @@
 <title>4eKhSAI</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-:root{--bg:#050b12;--gl:#ffffff0d;--ln:#ffffff1a;--tx:#e6f6fd;--mu:#7f9bad}
-body{--c:#2de2c8}
-body[data-s=listen]{--c:#f5c26b}
+@property --c{syntax:"<color>";inherits:true;initial-value:#35e0c6}
+:root{--bg:#050b12;--s1:rgba(255,255,255,.05);--s2:rgba(255,255,255,.09);--ln:rgba(255,255,255,.1);--tx:#eaf6f7;--mu:#8aa3b0;--sheet:#0a1620}
+body{--c:#35e0c6;transition:--c .6s}
+body[data-s=listen]{--c:#f2c46d}
 body[data-s=think]{--c:#a78bfa}
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(120% 70% at 50% 20%,#0b2f3b 0,var(--bg) 62%);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(#ffffff06 1px,transparent 1px) 0 0/100% 32px,linear-gradient(90deg,#ffffff06 1px,transparent 1px) 0 0/32px 100%;mask-image:radial-gradient(75% 60% at 50% 30%,#000,transparent)}
-.scan{position:fixed;left:0;right:0;top:-140px;height:140px;pointer-events:none;background:linear-gradient(transparent,#3de0ff14,transparent);animation:sc 8s linear infinite}
-@keyframes sc{to{transform:translateY(120vh)}}
-.fr{position:fixed;inset:calc(8px + env(safe-area-inset-top)) 8px calc(8px + env(safe-area-inset-bottom));pointer-events:none;opacity:.5;background:linear-gradient(var(--c),var(--c)) 0 0/22px 1.5px,linear-gradient(var(--c),var(--c)) 0 0/1.5px 22px,linear-gradient(var(--c),var(--c)) 100% 0/22px 1.5px,linear-gradient(var(--c),var(--c)) 100% 0/1.5px 22px,linear-gradient(var(--c),var(--c)) 0 100%/22px 1.5px,linear-gradient(var(--c),var(--c)) 0 100%/1.5px 22px,linear-gradient(var(--c),var(--c)) 100% 100%/22px 1.5px,linear-gradient(var(--c),var(--c)) 100% 100%/1.5px 22px;background-repeat:no-repeat}
+body{height:100dvh;display:flex;flex-direction:column;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(85% 50% at 50% 30%,color-mix(in srgb,var(--c) 15%,transparent),transparent 72%),var(--bg);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:hidden}
 button,input,select{font:inherit;color:inherit}
-header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px 20px 4px}
-.brand{font-weight:800;font-size:19px;letter-spacing:.14em;background:linear-gradient(90deg,var(--tx),var(--c),var(--tx));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 6s linear infinite}
-@keyframes sh{to{background-position:-220% 0}}
-.chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);background:var(--gl);border:1px solid var(--ln);border-radius:99px;padding:5px 12px;backdrop-filter:blur(10px)}
-.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:bl 1.6s ease-in-out infinite}
-@keyframes bl{50%{opacity:.35}}
-.ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gl);border:1px solid var(--ln);cursor:pointer}
-.ic svg{width:20px;height:20px;stroke:var(--tx);fill:none;stroke-width:2;stroke-linecap:round}
-#vv,#cv{position:relative;flex:1;min-height:0;display:none;flex-direction:column;padding-bottom:78px}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:.02em}
+.brand svg{width:26px;height:26px;stroke:var(--c);fill:none;stroke-width:1.6;stroke-linejoin:round;transition:stroke .6s}
+.hr{display:flex;align-items:center;gap:10px}
+.ic{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:14px;background:var(--s1);border:1px solid var(--ln);transition:background .2s}
+.ic:active{background:var(--s2)}
+.ic svg{width:20px;height:20px;stroke:var(--tx);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#tp{display:none;align-items:center;gap:6px;font-size:14px;font-variant-numeric:tabular-nums;color:#f2c46d;background:rgba(242,196,109,.1);border:1px solid rgba(242,196,109,.3);border-radius:99px;padding:5px 12px}
+#tp.on{display:flex}
+#tp svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+#stat{flex:none;min-height:22px;margin:6px 20px 0;font-size:13px;color:var(--mu);text-align:center}
+#vv,#cv{flex:1;min-height:0;display:none;flex-direction:column;padding-bottom:84px}
 body[data-v=vv] #vv{display:flex;align-items:center}
 body[data-v=cv] #cv{display:flex}
-#orb{flex:none;border:0;background:none;padding:0;margin:2px 0 0;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#tel{flex:none;font:12px/1 ui-monospace,Menlo,monospace;letter-spacing:.18em;color:var(--c);opacity:.8;margin-top:2px}
-#stat{flex:none;min-height:20px;margin:4px 18px 0;font-size:12px;color:var(--mu);text-align:center}
-#cap{flex:1;min-height:0;width:100%;max-width:520px;padding:6px 26px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:8px;overflow:hidden}
-#cq{color:var(--mu);font-size:15px;min-height:22px}
-#ca{font-size:20px;line-height:1.4;font-weight:500;max-height:7.5em;overflow:hidden}
-.chk{flex:none;display:flex;gap:8px;align-items:center;justify-content:center;color:var(--mu);font-size:14px;padding:4px 0}
-#log{flex:1;min-height:0;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px;mask-image:linear-gradient(transparent,#000 18px)}
-.m{max-width:86%;display:flex;flex-direction:column;gap:4px}
-.bt{padding:10px 14px;border-radius:18px;white-space:pre-wrap;word-break:break-word;border:1px solid var(--ln);backdrop-filter:blur(10px)}
+#orb{flex:none;border:0;background:none;padding:0;margin:0;line-height:0;border-radius:50%}
+.chip{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:14px;color:var(--mu);background:var(--s1);border:1px solid var(--ln);border-radius:99px;padding:6px 14px}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:bl 1.6s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35}}
+#cap{flex:1;min-height:0;width:100%;max-width:520px;padding:12px 28px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:10px;overflow:hidden}
+#cq{color:var(--mu);font-size:15px;min-height:22px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#ca{font-size:22px;line-height:1.35;font-weight:500;max-height:8em;overflow:hidden;text-wrap:balance}
+.chk{flex:none;display:flex;gap:10px;align-items:center;justify-content:center;color:var(--mu);font-size:14px;padding:6px 0 4px;cursor:pointer}
+.sw{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:46px;height:28px;margin:0;border-radius:99px;background:var(--s2);border:1px solid var(--ln);cursor:pointer;transition:.25s}
+.sw::before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--mu);transition:.25s}
+.sw:checked{background:color-mix(in srgb,var(--c) 22%,transparent);border-color:var(--c)}
+.sw:checked::before{transform:translateX(18px);background:var(--c);box-shadow:0 0 10px var(--c)}
+#log{flex:1;min-height:0;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;mask-image:linear-gradient(transparent,#000 20px);overscroll-behavior:contain}
+.m{max-width:88%;display:flex;flex-direction:column;gap:4px}
+.bt{padding:10px 14px;border-radius:20px;white-space:pre-wrap;word-break:break-word;border:1px solid var(--ln)}
 .u{align-self:flex-end;align-items:flex-end}
-.u .bt{background:linear-gradient(135deg,#2de2c828,#2de2c80d);border-color:#2de2c844;border-bottom-right-radius:6px}
+.u .bt{background:color-mix(in srgb,var(--c) 18%,transparent);border-color:color-mix(in srgb,var(--c) 40%,transparent);border-bottom-right-radius:6px}
 .j{align-self:flex-start}
-.j .bt{background:var(--gl);border-bottom-left-radius:6px;border-left:2px solid var(--c)}
-.s{align-self:center;color:var(--mu);font-size:13px;text-align:center}
-.mf{display:flex;gap:12px;font-size:11px;color:var(--mu);padding:0 6px}
-.mf button{background:none;border:0;color:var(--c);padding:0;font-size:11px;cursor:pointer}
+.j .bt{background:var(--s1);border-bottom-left-radius:6px}
+.s{align-self:center;color:var(--mu);font-size:13px;text-align:center;max-width:92%}
+.mf{display:flex;gap:12px;font-size:12px;color:var(--mu);padding:0 6px}
+.mf button{background:none;border:0;color:var(--c);padding:0;font-size:12px}
 .dt i{display:inline-block;width:6px;height:6px;margin:3px 2px;border-radius:50%;background:var(--c);animation:dt 1s ease-in-out infinite}
 .dt i:nth-child(2){animation-delay:.15s}.dt i:nth-child(3){animation-delay:.3s}
 @keyframes dt{50%{transform:translateY(-4px);opacity:.35}}
-#sg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 16px 10px}
-#sg button{background:var(--gl);border:1px solid var(--ln);border-radius:99px;padding:8px 14px;font-size:14px;color:var(--tx);cursor:pointer}
-#tf{display:flex;gap:8px;align-items:center;padding:6px 16px 4px}
-#ti{flex:1;min-width:0;background:var(--gl);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;outline:0}
-#ti:focus{border-color:var(--c)}
-.tg{position:relative;flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--gl);border:1px solid var(--ln);cursor:pointer;transition:.25s}
+#sg{display:flex;gap:8px;overflow-x:auto;padding:0 16px 10px;scrollbar-width:none}
+#sg::-webkit-scrollbar{display:none}
+#sg button{flex:none;background:var(--s1);border:1px solid var(--ln);border-radius:99px;padding:8px 14px;font-size:14px;white-space:nowrap}
+#tf{display:flex;gap:8px;align-items:center;margin:0 12px;padding:6px;background:var(--s1);border:1px solid var(--ln);border-radius:26px}
+#tf:focus-within{border-color:var(--c)}
+#ti{flex:1;min-width:0;background:none;border:0;padding:8px 10px;outline:0}
+.tg{position:relative;flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;cursor:pointer}
 .tg input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
 .tg svg{width:20px;height:20px;fill:none;stroke:var(--mu);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:.25s}
-.tg:has(input:checked){border-color:var(--c);box-shadow:0 0 12px #2de2c833}
+.tg:has(input:checked){background:color-mix(in srgb,var(--c) 18%,transparent)}
 .tg input:checked+svg{stroke:var(--c)}
-.chk{cursor:pointer}
-.sw{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:44px;height:26px;margin:0;border-radius:99px;background:var(--gl);border:1px solid var(--ln);cursor:pointer;transition:.25s}
-.sw::before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:.25s}
-.sw:checked{background:#2de2c824;border-color:var(--c)}
-.sw:checked::before{transform:translateX(18px);background:var(--c);box-shadow:0 0 10px var(--c)}
-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:5px;border-radius:99px;background:#0b1824d9;border:1px solid var(--ln);backdrop-filter:blur(14px);z-index:5}
-nav button{border:0;background:none;padding:10px 26px;border-radius:99px;color:var(--mu);font-weight:600;cursor:pointer;transition:.25s}
-nav button.on{background:var(--c);color:#04121a}
-#bd{position:fixed;inset:0;background:#0009;opacity:0;pointer-events:none;transition:.25s}
-#set{position:fixed;left:0;right:0;bottom:0;max-height:88dvh;overflow-y:auto;background:#0b1824;border-top:1px solid var(--ln);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;transform:translateY(105%);transition:.3s}
+.tg:has(input:focus-visible){outline:2px solid var(--c)}
+.go{flex:none;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:var(--c);transition:background .6s}
+.go svg{width:20px;height:20px;stroke:#04121a;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:5px;border-radius:99px;background:rgba(10,22,32,.82);border:1px solid var(--ln);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:5}
+#tabs button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:10px 22px;border-radius:99px;color:var(--mu);font-weight:600;transition:.25s}
+#tabs button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#tabs button.on{background:var(--c);color:#04121a}
+#bd{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.25s;z-index:9}
+#set{position:fixed;left:0;right:0;bottom:0;z-index:10;max-height:90dvh;overflow-y:auto;background:var(--sheet);border-top:1px solid var(--ln);border-radius:26px 26px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;transform:translateY(105%);transition:transform .3s;overscroll-behavior:contain}
 .open #set{transform:none}.open #bd{opacity:1;pointer-events:auto}
-#set h2{margin:0;font-size:17px}
-#set label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mu)}
-#set input[type=password],#set select{width:100%;background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px}
-#set option{background:#0b1824}
-.btn{background:var(--gl);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;cursor:pointer}
+.grip{align-self:center;width:40px;height:4px;border-radius:4px;background:var(--ln);flex:none}
 .hd{display:flex;justify-content:space-between;align-items:center}
-@media (prefers-reduced-motion:reduce){.scan,.brand,.chip::before,.dt i{animation:none}}
+.hd h2{margin:0;font-size:20px}
+.card{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:20px;background:var(--s1);border:1px solid var(--ln)}
+.card h3{margin:0;font-size:15px}
+.card label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mu)}
+.card input:not([type=checkbox]),.card select{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--ln);border-radius:14px;padding:12px;outline:0}
+.card input:focus,.card select:focus{border-color:var(--c)}
+.card select{-webkit-appearance:none;appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238aa3b0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:18px}
+.card option{background:var(--sheet)}
+.pw{position:relative}
+.pw input{padding-right:48px!important}
+.eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:grid;place-items:center;background:none;border:0;border-radius:12px}
+.eye svg{width:20px;height:20px;stroke:var(--mu);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn{background:var(--s2);border:1px solid var(--ln);border-radius:14px;padding:12px 14px;font-weight:500}
+.btn:active{filter:brightness(1.3)}
+.btn.pri{background:var(--c);border-color:transparent;color:#04121a;font-weight:600;transition:background .6s}
+.btn.dg{color:#ff8a8a}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{margin:0;font-size:13px;color:var(--mu);min-height:18px}
+#ml{display:flex;flex-direction:column;gap:6px}
+.mi{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 12px;border-radius:12px;background:rgba(0,0,0,.25);font-size:14px}
+.mi button{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:var(--s2);color:var(--mu);font-size:18px;line-height:1}
+@media (prefers-reduced-motion:reduce){.chip::before,.dt i{animation:none}body,#set,.sw,.sw::before{transition:none}}
 </style>
 </head>
 <body data-s="idle" data-v="vv">
-<div class="scan"></div><div class="fr"></div>
 <header>
-  <div class="brand">4eKhSAI</div>
-  <div class="chip" id="chip">Tayyor</div>
-  <button class="ic" id="gear" aria-label="Sozlamalar"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+  <div class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="1"/><rect x="5" y="5" width="14" height="14" rx="1" transform="rotate(45 12 12)"/></svg>4eKhSAI</div>
+  <div class="hr">
+    <div id="tp"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg><span id="tpt"></span></div>
+    <button class="ic" id="gear" aria-label="Sozlamalar"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+  </div>
 </header>
-<div id="stat"></div>
+<div id="stat" role="status" aria-live="polite"></div>
 <main id="vv">
   <button id="orb" aria-label="Gapirish"><canvas id="hud"></canvas></button>
-  <div id="tel"></div>
-  <div id="cap"><div id="cq"></div><div id="ca"></div></div>
+  <div class="chip" id="chip">Tayyor</div>
+  <div id="cap" aria-live="polite"><div id="cq"></div><div id="ca"></div></div>
   <label class="chk"><input type="checkbox" id="auto" class="sw"><span>Doimiy suhbat</span></label>
 </main>
 <section id="cv">
   <div id="log"></div>
   <div id="sg"><button>Toshkentda ob-havo qanday?</button><button>Soat nechchi?</button><button>10 daqiqaga taymer qoʻy</button><button>Menga bir qiziq fakt ayt</button></div>
-  <form id="tf"><input id="ti" type="text" placeholder="Xabar yozing…" autocomplete="off"><label class="tg" title="Javobni ovozda aytish"><input type="checkbox" id="rd" aria-label="Javobni ovozda aytish"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></label><button class="ic" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+  <form id="tf"><input id="ti" type="text" placeholder="Xabar yozing…" autocomplete="off" aria-label="Xabar"><label class="tg" title="Javobni ovozda aytish"><input type="checkbox" id="rd" aria-label="Javobni ovozda aytish"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></label><button class="go" aria-label="Yuborish"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></form>
 </section>
-<nav id="nv"><button data-v="vv" class="on">Ovoz</button><button data-v="cv">Chat</button></nav>
+<nav id="tabs"><button data-v="vv" class="on"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Ovoz</button><button data-v="cv"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Chat</button></nav>
 <div id="wrap"><div id="bd"></div>
-<div id="set">
-  <div class="hd"><h2>Sozlamalar</h2><button class="btn" id="cl">Yopish</button></div>
-  <label>Gemini API kaliti<input id="key" type="password" autocomplete="off" placeholder="AIza..."></label>
-  <button class="btn" id="save">Saqlash va modellarni yuklash</button>
-  <label>Model<select id="model"><option value="auto">Avto: eng yaxshi (tavsiya)</option></select></label>
-  <label>NeuronAI API kaliti<input id="nk" type="password" autocomplete="off" placeholder="nai_..."></label>
-  <label>Ovoz<select id="nv"></select></label>
-  <button class="btn" id="lv">Ovozlarni yuklash</button>
-  <button class="btn" id="vt">Ovozni sinash</button>
-  <button class="btn" id="mm">Xotira</button>
-  <button class="btn" id="cc">Suhbatni tozalash</button>
-  <button class="btn" id="inst" style="display:none">Ilova sifatida oʻrnatish</button>
+<div id="set" role="dialog" aria-label="Sozlamalar">
+  <div class="grip"></div>
+  <div class="hd"><h2>Sozlamalar</h2><button class="ic" id="cl" aria-label="Yopish"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="card">
+    <h3>Aql (Gemini)</h3>
+    <label>API kaliti<div class="pw"><input id="key" type="password" autocomplete="off" placeholder="AIza..."><button type="button" class="eye" aria-label="Kalitni koʻrsatish"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></label>
+    <button class="btn pri" id="save">Saqlash va modellarni yuklash</button>
+    <p class="hint" id="kh"></p>
+    <label>Model<select id="model"><option value="auto">Avto: eng yaxshi (tavsiya)</option></select></label>
+  </div>
+  <div class="card">
+    <h3>Ovoz (NeuronAI)</h3>
+    <label>API kaliti<div class="pw"><input id="nk" type="password" autocomplete="off" placeholder="nai_..."><button type="button" class="eye" aria-label="Kalitni koʻrsatish"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div></label>
+    <label>Ovoz<select id="vs"></select></label>
+    <p class="hint" id="vh"></p>
+    <div class="row"><button class="btn" id="lv">Ovozlarni yuklash</button><button class="btn" id="vt">Ovozni sinash</button></div>
+  </div>
+  <div class="card">
+    <h3>Xotira</h3>
+    <div id="ml"></div>
+    <button class="btn dg" id="mm">Xotirani tozalash</button>
+  </div>
+  <div class="card">
+    <h3>Suhbat va ilova</h3>
+    <button class="btn" id="cc">Suhbatni tozalash</button>
+    <button class="btn" id="inst" style="display:none">Ilova sifatida oʻrnatish</button>
+  </div>
 </div></div>
 <script>
+
 const $ = id => document.getElementById(id), LS = window.localStorage;
 const API = "https://generativelanguage.googleapis.com/v1beta/", TTS = "https://my.neuronai.uz/api/v1/tts";
 const SYS = "Sen 4eKhSAI — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber. Ismingni faqat soʻralganda ayt.";
@@ -125,10 +169,24 @@ let key = g("k", ""), model = g("m", "auto"), nkey = g("nk", ""), nvoice = g("nv
 let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null, SP = null, mem = [];
 try { mem = JSON.parse(g("mem", "[]")); } catch (e) {}
 const sys = () => SYS + " Hozir: " + new Date().toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }) + ". Nutq tanish xato qilishi mumkin: maʼnosini taxmin qil, juda tushunarsiz boʻlsa bitta qisqa savol ber. %, °C, $ va qisqartmalarni soʻz bilan yoz." + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
-const upd = () => { $("mm").textContent = "Xotirani tozalash (" + mem.length + ")"; };
+function upd() {
+  const l = $("ml"); l.innerHTML = "";
+  if (!mem.length) { const p = document.createElement("p"); p.className = "hint"; p.textContent = "Hozircha hech narsa yoʻq. Masalan: “Ismim Shaxriyor, eslab qol” deng."; l.appendChild(p); }
+  mem.forEach((f, i) => {
+    const r = document.createElement("div"); r.className = "mi";
+    const s = document.createElement("span"); s.textContent = f;
+    const b = document.createElement("button"); b.textContent = "×"; b.setAttribute("aria-label", "Oʻchirish");
+    b.onclick = () => { mem.splice(i, 1); sv("mem", JSON.stringify(mem)); upd(); };
+    r.append(s, b); l.appendChild(r);
+  });
+  $("mm").style.display = mem.length ? "" : "none";
+}
 const LBL = { idle: "Tayyor", listen: "Tinglayapman", think: "Oʻylayapman", speak: "Gapiryapman" };
 function setS(s) { S = s; document.body.dataset.s = s; $("chip").textContent = LBL[s]; }
-function stat(t) { $("stat").textContent = t; }
+let stt = 0;
+function stat(t) { const e = $("stat"); e.textContent = t; clearTimeout(stt); if (t) stt = setTimeout(() => { e.textContent = ""; }, 9000); }
+const fe = e => /failed to fetch|networkerror|load failed/i.test(e.message) ? "internet aloqasi yoʻq" : e.message;
+const hint = (id, t) => { $(id).textContent = t; };
 let chat = []; try { chat = JSON.parse(g("chat", "[]")); } catch (e) {}
 const saveChat = () => sv("chat", JSON.stringify(chat.slice(-60)));
 function msg(c, t, ts) {
@@ -156,7 +214,8 @@ function ready(n = true) {
 function unlock() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }
 
 async function loadModels() {
-  if (!key) return;
+  if (!key) { hint("kh", "Gemini kalitini kiriting."); return; }
+  hint("kh", "Yuklanmoqda…");
   try {
     const r = await fetch(API + "models?pageSize=200", { headers: { "x-goog-api-key": key } });
     const j = await r.json();
@@ -166,23 +225,27 @@ async function loadModels() {
     const all = ["auto", ...rank(ms)], sel = $("model"); sel.innerHTML = "";
     all.forEach(n => { const o = document.createElement("option"); o.value = n; o.textContent = n === "auto" ? "Avto: eng yaxshi (tavsiya)" : n; sel.appendChild(o); });
     sel.value = all.includes(model) ? model : "auto"; model = sel.value; sv("m", model);
-    stat("Kalit qabul qilindi. Eng yaxshi model: " + autoList()[0]);
-  } catch (e) { stat("Kalit yoki model xatosi: " + e.message); }
+    hint("kh", "Kalit qabul qilindi. Eng yaxshi model: " + autoList()[0]);
+  } catch (e) { hint("kh", "Kalit yoki model xatosi: " + fe(e)); }
 }
 
 async function loadVoices() {
+  if (!nkey) { hint("vh", "Ovozlarni yuklash uchun NeuronAI kalitini kiriting."); return; }
+  hint("vh", "Yuklanmoqda…");
   try {
-    const r = await fetch(TTS + "/voices", { headers: nkey ? { Authorization: "Bearer " + nkey } : {} });
+    const r = await fetch(TTS + "/voices", { headers: { Authorization: "Bearer " + nkey } });
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
     const a = (Array.isArray(j) ? j : (j.data || j.voices || j.items || [])).filter(v => v && (v.voice_id || v.id));
-    if (!a.length) { stat("Ovozlar roʻyxati boʻsh."); return; }
-    const sel = $("nv"); sel.innerHTML = "";
-    a.forEach(v => { const id = v.voice_id || v.id, o = document.createElement("option"); o.value = id; o.textContent = (v.name || id) + (v.language ? " · " + v.language : ""); sel.appendChild(o); });
+    if (!a.length) { hint("vh", "Ovozlar roʻyxati boʻsh."); return; }
+    const isUz = v => /^uz/i.test(v.language || "") ? 1 : 0;
+    a.sort((x, y) => isUz(y) - isUz(x));
+    const sel = $("vs"); sel.innerHTML = "";
+    a.forEach(v => { const id = v.voice_id || v.id, o = document.createElement("option"); o.value = id; o.textContent = (v.name || id) + (v.language ? " (" + v.language + ")" : ""); sel.appendChild(o); });
     sel.value = a.some(v => (v.voice_id || v.id) === nvoice) ? nvoice : (a[0].voice_id || a[0].id);
     nvoice = sel.value; sv("nv", nvoice);
-    stat(a.length + " ta ovoz topildi.");
-  } catch (e) { stat("Ovozlar xatosi: " + e.message); }
+    hint("vh", a.length + " ta ovoz yuklandi.");
+  } catch (e) { hint("vh", "Ovozlarni yuklab boʻlmadi: " + fe(e)); }
 }
 
 const BEST = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.5-flash-lite"];
@@ -369,7 +432,7 @@ function newSpeaker() {
       while (!q.length) { if (done) return; await new Promise(r => wake = r); }
       const it = q.shift(); if (stopped) continue;
       try { const b = await it.p; if (!stopped) { await play(b); aud = null; } }
-      catch (e) { aud = null; bad = !!uzv(); if (stopped || await native(it.t)) continue; if (!shown) { shown = true; say("Ovoz xatosi: " + e.message, "s"); } }
+      catch (e) { aud = null; bad = !!uzv(); if (stopped || await native(it.t)) continue; if (!shown) { shown = true; say("Ovoz xatosi: " + fe(e), "s"); } }
     }
   })();
   return {
@@ -395,7 +458,7 @@ async function turn(q, voice = true) {
     await answer(q, t => { full += t; buf += t; d.textContent = full; $("ca").textContent = full.slice(-220); $("log").scrollTop = 1e9; feed(false); });
     if (!full.trim()) d.textContent = "(javob kelmadi)";
     feed(true);
-  } catch (e) { if (!full) d.parentElement.remove(); if (!ac.signal.aborted) say("Xato: " + (/failed to fetch|networkerror/i.test(e.message) ? "internet aloqasi yoʻq" : e.message), "s"); }
+  } catch (e) { if (!full) d.parentElement.remove(); if (!ac.signal.aborted) say("Xato: " + fe(e), "s"); }
   if (full.trim()) { chat.push({ r: "j", t: full, ts: Date.now() }); saveChat(); }
   sp.end(); await sp.run;
   if (sp.stopped) return;
@@ -436,9 +499,9 @@ $("tf").onsubmit = e => {
   $("ti").value = ""; stopSpeak(); turn(q, v);
 };
 $("sg").onclick = e => { const b = e.target.closest("button"); if (b) { $("ti").value = b.textContent; $("tf").requestSubmit(); } };
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
   document.body.dataset.v = b.dataset.v;
-  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
   if (b.dataset.v === "cv") $("log").scrollTop = 1e9;
 });
 $("cc").onclick = () => { if (confirm("Suhbat tozalansinmi?")) { chat = []; hist = []; saveChat(); $("log").innerHTML = ""; $("sg").style.display = ""; } };
@@ -448,7 +511,7 @@ $("save").onclick = () => { key = $("key").value.trim(); sv("k", key); loadModel
 $("model").onchange = () => { model = $("model").value; sv("m", model); };
 $("nk").oninput = () => { nkey = $("nk").value.trim(); sv("nk", nkey); };
 $("nk").onchange = loadVoices;
-$("nv").onchange = () => { nvoice = $("nv").value; sv("nv", nvoice); };
+$("vs").onchange = () => { nvoice = $("vs").value; sv("nv", nvoice); };
 $("lv").onclick = loadVoices;
 $("vt").onclick = () => { unlock(); $("wrap").classList.remove("open"); if (ready()) speak("Salom, boss. Ovoz ishlayapti."); };
 
@@ -477,8 +540,17 @@ function beep() {
     o.start(t); o.stop(t + 1.6);
   } catch (e) {}
 }
-function arm(x) { setTimeout(() => { sv("tm", JSON.stringify(tmGet().filter(y => y.id !== x.id))); alarm(x.l); }, Math.max(0, x.at - Date.now())); }
-sv("tm", JSON.stringify(tmGet().filter(x => x.at > Date.now() - 6e5))); tmGet().forEach(x => arm(x));
+function arm() { tick(); }
+function tick() {
+  const now = Date.now(), all = tmGet(), due = all.filter(x => x.at <= now);
+  if (due.length) { sv("tm", JSON.stringify(all.filter(x => x.at > now))); due.forEach(x => alarm(x.l)); }
+  const nx = tmGet().sort((p, q) => p.at - q.at)[0], tp = $("tp");
+  if (nx) {
+    const s = Math.max(0, Math.round((nx.at - now) / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), q = s % 60;
+    $("tpt").textContent = (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(q).padStart(2, "0"); tp.classList.add("on");
+  } else tp.classList.remove("on");
+}
+sv("tm", JSON.stringify(tmGet().filter(x => x.at > Date.now() - 6e5))); tick(); setInterval(tick, 1000); document.addEventListener("visibilitychange", tick);
 
 $("rd").checked = g("rd", "") === "1";
 $("rd").onchange = () => { sv("rd", $("rd").checked ? "1" : "0"); stat($("rd").checked ? "Javoblar ovozda aytiladi." : "Javoblar faqat yoziladi."); };
@@ -487,12 +559,12 @@ $("rd").onchange = () => { sv("rd", $("rd").checked ? "1" : "0"); stat($("rd").c
 const cv = $("hud"), cx = cv.getContext("2d"), RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
 let W = 0, sc = 1;
 function fit() {
-  const s = Math.min(innerWidth * .94, 380, innerHeight * .44), d = Math.min(devicePixelRatio || 1, 2);
+  const s = Math.min(innerWidth * .86, 340, innerHeight * .4), d = Math.min(devicePixelRatio || 1, 2);
   cv.style.width = cv.style.height = s + "px"; cv.width = cv.height = W = Math.round(s * d); sc = W / 320;
 }
 addEventListener("resize", fit); fit();
-const CL = { idle: [45, 226, 200], listen: [245, 194, 107], think: [167, 139, 250], speak: [45, 226, 200] };
-let col = [45, 226, 200], lvl = 0, bar = new Float32Array(96);
+const CL = { idle: [53, 224, 198], listen: [242, 196, 109], think: [167, 139, 250], speak: [53, 224, 198] };
+let col = [53, 224, 198], lvl = 0, bar = new Float32Array(96);
 const T0 = performance.now();
 const PT = Array.from({ length: 44 }, () => ({ a: Math.random() * 6.283, r: .36 + Math.random() * .6, s: (Math.random() - .5) * .35, z: .8 + Math.random() * 1.6, p: Math.random() * 6.283 }));
 function frame(now) {
@@ -545,12 +617,16 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
-setInterval(() => { $("tel").textContent = new Date().toTimeString().slice(0, 8) + " · NEURONAI"; }, 1000);
 
 $("key").value = key; $("nk").value = nkey;
-$("nv").innerHTML = '<option value="' + nvoice + '">' + nvoice + '</option>';
-loadVoices();
-if (key) loadModels(); if (!key || !nkey) $("wrap").classList.add("open");
+$("vs").innerHTML = '<option value="' + nvoice + '">' + nvoice + '</option>';
+document.querySelectorAll(".eye").forEach(b => b.onclick = () => {
+  const i = b.parentElement.querySelector("input"); i.type = i.type === "password" ? "text" : "password";
+  b.setAttribute("aria-label", i.type === "password" ? "Kalitni koʻrsatish" : "Kalitni yashirish");
+});
+if (nkey) loadVoices(); else hint("vh", "Ovozlarni yuklash uchun NeuronAI kalitini kiriting.");
+if (key) loadModels(); else hint("kh", "Gemini kalitini kiriting.");
+if (!key) $("wrap").classList.add("open");
 chat.forEach(m => msg(m.r, m.t, m.ts));
 hist = chat.slice(-10).map(m => ({ role: m.r === "u" ? "user" : "model", parts: [{ text: m.t }] }));
 while (hist.length && hist[0].role !== "user") hist.shift();
