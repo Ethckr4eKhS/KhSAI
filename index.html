@@ -115,7 +115,7 @@ const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
 let key = g("k", ""), model = g("m", "gemini-flash-latest"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
 let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null, SP = null, mem = [];
 try { mem = JSON.parse(g("mem", "[]")); } catch (e) {}
-const sys = () => SYS + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
+const sys = () => SYS + " Hozir: " + new Date().toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }) + ". Nutq tanish xato qilishi mumkin: maʼnosini taxmin qil, juda tushunarsiz boʻlsa bitta qisqa savol ber. %, °C, $ va qisqartmalarni soʻz bilan yoz." + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
 const upd = () => { $("mm").textContent = "Xotirani tozalash (" + mem.length + ")"; };
 const LBL = { idle: "Tayyor", listen: "Tinglayapman", think: "Oʻylayapman", speak: "Gapiryapman" };
 function setS(s) { S = s; document.body.dataset.s = s; $("chip").textContent = LBL[s]; }
@@ -141,7 +141,7 @@ function say(t, c) {
   chat.push({ r: c, t, ts: Date.now() }); saveChat(); return msg(c, t);
 }
 function ready(n = true) {
-  if (key && (!n || nkey)) return true;
+  if (key && (!n || nkey || uzv())) return true;
   $("wrap").classList.add("open"); stat(key ? "NeuronAI kalitini kiriting." : "Avval Gemini kalitini kiriting."); return false;
 }
 function unlock() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }
@@ -153,6 +153,7 @@ async function loadModels() {
     const j = await r.json();
     if (!r.ok) throw new Error((j.error && j.error.message) || r.status);
     const ms = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace("models/", ""));
+    sv("ml", JSON.stringify(ms));
     const sel = $("model"); sel.innerHTML = "";
     ms.forEach(n => { const o = document.createElement("option"); o.value = o.textContent = n; sel.appendChild(o); });
     sel.value = ms.includes(model) ? model
@@ -178,6 +179,9 @@ async function loadVoices() {
 }
 
 const FB = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+let ac = null;
+const nap = t => new Promise(r => setTimeout(r, t));
+const chain = () => { let ml = []; try { ml = JSON.parse(g("ml", "[]")); } catch (e) {} return [...new Set([model, ...FB, ...ml.filter(n => /flash/.test(n) && !/image|tts|live|audio|exp|8b|robotics|computer/.test(n))])].slice(0, 5); };
 const textOf = j => ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || []).map(p => p.text || "").join("").trim();
 const TOOLS = [{ functionDeclarations: [
   { name: "get_time", description: "Hozirgi sana, vaqt va vaqt mintaqasini qaytaradi" },
@@ -187,9 +191,9 @@ const TOOLS = [{ functionDeclarations: [
   { name: "search_web", description: "Internetdan yangi maʼlumot qidiradi (yangiliklar, narxlar, faktlar)", parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] } }
 ] }];
 function alarm(l) {
-  say("Taymer: " + l, "s");
+  say("Taymer: " + l, "s"); beep();
   try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
-  if (nkey && S === "idle") speak("Boss, taymer tugadi. " + l);
+  if ((nkey || uzv()) && S === "idle") setTimeout(() => speak("Boss, taymer tugadi. " + l), 1800);
 }
 const FN = {
   get_time: async () => ({ now: new Date().toString() }),
@@ -199,7 +203,7 @@ const FN = {
     const w = await (await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + p.latitude + "&longitude=" + p.longitude + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto")).json();
     return { city: p.name, country: p.country, ...w.current };
   },
-  set_timer: async ({ seconds, label }) => { const n = Math.max(1, Math.min(+seconds || 0, 86400)); setTimeout(() => alarm(label || "Vaqt tugadi"), n * 1000); return { ok: true, seconds: n }; },
+  set_timer: async ({ seconds, label }) => { const n = Math.max(1, Math.min(+seconds || 0, 86400)), x = { id: Date.now(), at: Date.now() + n * 1000, l: label || "Vaqt tugadi" }; sv("tm", JSON.stringify([...tmGet(), x])); arm(x); return { ok: true, seconds: n }; },
   remember: async ({ fact }) => { mem = [...mem, String(fact).slice(0, 200)].slice(-30); sv("mem", JSON.stringify(mem)); upd(); return { ok: true }; },
   search_web: async ({ query }) => {
     const r = await fetch(API + "models/gemini-2.5-flash:generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
@@ -223,11 +227,12 @@ async function* sse(r) {
 async function streamOnce(m, contents, onText) {
   const r = await fetch(API + "models/" + m + ":streamGenerateContent?alt=sse", {
     method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({ systemInstruction: { parts: [{ text: sys() }] }, tools: TOOLS, contents })
+    signal: ac && ac.signal,
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: sys() }] }, tools: TOOLS, contents, ...(/2\.5-flash/.test(m) ? { generationConfig: { thinkingConfig: { thinkingBudget: 0 } } } : {}) })
   });
   if (!r.ok) {
     let j = {}; try { j = await r.json(); } catch (_) {}
-    const e = new Error((j.error && j.error.message) || r.status); e.busy = [429, 500, 503].includes(r.status); throw e;
+    const e = new Error((j.error && j.error.message) || r.status); e.busy = [404, 429, 500, 502, 503, 504].includes(r.status); throw e;
   }
   const parts = [];
   for await (const j of sse(r)) {
@@ -240,10 +245,13 @@ async function answer(q, onText) {
   const base = [...hist, { role: "user", parts: [{ text: q }] }], steps = []; let all = "";
   for (let n = 0; n < 4; n++) {
     const contents = base.concat(steps); let parts, last;
-    for (const m of [model, ...FB.filter(x => x !== model)]) {
-      let started = false;
-      try { parts = await streamOnce(m, contents, t => { started = true; all += t; onText(t); }); break; }
-      catch (e) { last = e; if (!e.busy || started) throw e; stat("Band, zaxira model sinayapman…"); }
+    for (let rd = 0; rd < 2 && !parts; rd++) {
+      if (rd) { stat("Band, qayta urinyapman…"); await nap(1500); }
+      for (const m of chain()) {
+        let started = false;
+        try { parts = await streamOnce(m, contents, t => { started = true; all += t; onText(t); }); break; }
+        catch (e) { last = e; if (!e.busy || started) throw e; stat("Band, zaxira model: " + m); }
+      }
     }
     if (!parts) throw last;
     const calls = parts.filter(p => p.functionCall);
@@ -274,28 +282,42 @@ function hook(a) {
     fd = new Uint8Array(n.frequencyBinCount); an = n;
   } catch (e) { an = fd = null; }
 }
-function takeSentences(buf, fin) {
+function takeSentences(buf, fin, min = 24) {
   const out = [], re = /[.!?…]+["”’)]*(\s+|$)|\n+/g; let last = 0, m;
   while ((m = re.exec(buf))) {
     if (!fin && !/\s$/.test(m[0])) break;
     const end = m.index + m[0].length, s = buf.slice(last, end).trim();
-    if (s.length >= 24) { out.push(s); last = end; }
+    if (s.length >= min) { out.push(s); last = end; }
   }
   if (fin) { const t = buf.slice(last).trim(); if (t) out.push(t); last = buf.length; }
   return [out, buf.slice(last)];
 }
-async function fetchTTS(t) {
-  const r = await fetch(TTS + "/synthesize", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + nkey },
-    body: JSON.stringify({ text: t, voice_id: nvoice, language: "uz", quality: "standard" })
-  });
-  if (!r.ok) {
-    let m = r.status;
-    try { const j = await r.json(); m = (j.error && (j.error.message || j.error.code)) || j.message || m; } catch (_) {}
-    throw new Error(m);
+async function fetchTTS(t, n = 0) {
+  if (!nkey) throw new Error("NeuronAI kaliti yoʻq");
+  try {
+    const r = await fetch(TTS + "/synthesize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + nkey },
+      body: JSON.stringify({ text: t, voice_id: nvoice, language: "uz", quality: "standard" })
+    });
+    if (!r.ok) {
+      let m = r.status;
+      try { const j = await r.json(); m = (j.error && (j.error.message || j.error.code)) || j.message || m; } catch (_) {}
+      const e = new Error(m); e.st = r.status; throw e;
+    }
+    return await r.blob();
+  } catch (e) {
+    if (n < 1 && (!e.st || e.st >= 500)) { await nap(500); return fetchTTS(t, n + 1); }
+    throw e;
   }
-  return r.blob();
+}
+const uzv = () => { try { return speechSynthesis.getVoices().find(v => /^uz/i.test(v.lang)); } catch (e) { return null; } };
+function native(t) {
+  const v = uzv(); if (!v) return Promise.resolve(false);
+  return new Promise(res => {
+    const u = new SpeechSynthesisUtterance(t); u.voice = v; u.lang = v.lang; u.rate = 1.05;
+    u.onend = u.onerror = () => res(true); setS("speak"); speechSynthesis.speak(u);
+  });
 }
 function play(b) {
   return new Promise((res, rej) => {
@@ -306,25 +328,25 @@ function play(b) {
 }
 function stopAud() { if (aud) { aud.pause(); aud.dispatchEvent(new Event("ended")); } }
 function newSpeaker() {
-  const q = []; let done = false, stopped = false, wake = null, shown = false;
+  const q = []; let done = false, stopped = false, wake = null, shown = false, bad = false;
   const run = (async () => {
     for (;;) {
       while (!q.length) { if (done) return; await new Promise(r => wake = r); }
-      const p = q.shift(); if (stopped) continue;
-      try { const b = await p; if (!stopped) { await play(b); aud = null; } }
-      catch (e) { aud = null; if (!shown) { shown = true; say("Ovoz xatosi: " + e.message, "s"); } }
+      const it = q.shift(); if (stopped) continue;
+      try { const b = await it.p; if (!stopped) { await play(b); aud = null; } }
+      catch (e) { aud = null; bad = !!uzv(); if (stopped || await native(it.t)) continue; if (!shown) { shown = true; say("Ovoz xatosi: " + e.message, "s"); } }
     }
   })();
   return {
     run, get stopped() { return stopped; },
-    add(t) { if (stopped) return; const p = fetchTTS(t); p.catch(() => {}); q.push(p); wake && wake(); },
+    add(t) { if (stopped) return; const p = bad || !nkey ? Promise.reject(new Error("NeuronAI ovozi yoʻq")) : fetchTTS(t); p.catch(() => {}); q.push({ p, t }); wake && wake(); },
     end() { done = true; wake && wake(); },
-    stop() { stopped = true; q.length = 0; stopAud(); wake && wake(); }
+    stop() { stopped = true; q.length = 0; stopAud(); try { speechSynthesis.cancel(); } catch (e) {} wake && wake(); }
   };
 }
 const stopSpeak = () => { SP && SP.stop(); };
 async function speak(t) {
-  if (!nkey) { ready(); return; }
+  if (!ready()) return;
   const sp = SP = newSpeaker(); sp.add(t); sp.end(); await sp.run;
   if (!sp.stopped) setS("idle");
 }
@@ -332,18 +354,18 @@ async function speak(t) {
 async function turn(q, voice = true) {
   say(q, "u"); $("cq").textContent = q; $("ca").textContent = ""; setS("think");
   const d = msg("j", ""); d.innerHTML = '<span class="dt"><i></i><i></i><i></i></span>';
-  const sp = SP = newSpeaker(); let buf = "", full = "";
-  const feed = fin => { if (!voice) return; const [ss, rest] = takeSentences(buf, fin); buf = rest; ss.forEach(s => sp.add(s.replace(/[*_#`]/g, ""))); };
+  const sp = SP = newSpeaker(); ac = new AbortController(); let buf = "", full = "", first = true;
+  const feed = fin => { if (!voice) return; const [ss, rest] = takeSentences(buf, fin, first ? 12 : 24); buf = rest; if (ss.length) first = false; ss.forEach(s => sp.add(s.replace(/[*_#`]/g, ""))); };
   try {
     await answer(q, t => { full += t; buf += t; d.textContent = full; $("ca").textContent = full.slice(-220); $("log").scrollTop = 1e9; feed(false); });
     if (!full.trim()) d.textContent = "(javob kelmadi)";
     feed(true);
-  } catch (e) { if (!full) d.parentElement.remove(); say("Xato: " + e.message, "s"); }
+  } catch (e) { if (!full) d.parentElement.remove(); if (!ac.signal.aborted) say("Xato: " + (/failed to fetch|networkerror/i.test(e.message) ? "internet aloqasi yoʻq" : e.message), "s"); }
   if (full.trim()) { chat.push({ r: "j", t: full, ts: Date.now() }); saveChat(); }
   sp.end(); await sp.run;
   if (sp.stopped) return;
   setS("idle");
-  if (voice && $("auto").checked) listen(); else if (!voice) stat("");
+  if (voice && $("auto").checked) relisten(); else if (!voice) stat("");
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -358,7 +380,7 @@ function listen() {
   rec.onend = () => {
     if (err) { setS("idle"); return; }
     const q = fin.trim();
-    if (!q) { setS("idle"); if ($("auto").checked) listen(); else stat("Hech narsa eshitilmadi."); return; }
+    if (!q) { setS("idle"); if ($("auto").checked) relisten(); else stat("Hech narsa eshitilmadi."); return; }
     turn(q);
   };
   rec.start();
@@ -366,7 +388,8 @@ function listen() {
 
 $("orb").onclick = () => {
   unlock();
-  if (S === "think") return;
+  if (S === "think") { ac && ac.abort(); stopSpeak(); setS("idle"); stat("Bekor qilindi."); return; }
+  keepOn();
   if (S === "listen") rec.stop();
   else if (S === "speak") { stopSpeak(); setS("idle"); }
   else listen();
@@ -400,6 +423,27 @@ addEventListener("beforeinstallprompt", e => { e.preventDefault(); dp = e; $("in
 $("inst").onclick = async () => { if (dp) { dp.prompt(); await dp.userChoice; dp = null; $("inst").style.display = "none"; } };
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 upd();
+
+/* ---- Doimiy suhbat, taymer ---- */
+const relisten = () => setTimeout(() => { if (S === "idle" && $("auto").checked) listen(); }, 450);
+let wl = null;
+async function keepOn() { try { if (navigator.wakeLock && $("auto").checked && !document.hidden && !wl) { wl = await navigator.wakeLock.request("screen"); wl.onrelease = () => { wl = null; }; } } catch (e) {} }
+$("auto").checked = g("auto", "") === "1";
+$("auto").onchange = () => { sv("auto", $("auto").checked ? "1" : "0"); if ($("auto").checked) { unlock(); keepOn(); } else if (wl) wl.release(); };
+document.addEventListener("visibilitychange", () => { if (!document.hidden) keepOn(); });
+try { speechSynthesis.getVoices(); } catch (e) {}
+const tmGet = () => { try { return JSON.parse(g("tm", "[]")); } catch (e) { return []; } };
+function beep() {
+  try {
+    unlock(); if (!AC) return;
+    const o = AC.createOscillator(), v = AC.createGain(), t = AC.currentTime;
+    o.frequency.value = 880; o.connect(v); v.connect(AC.destination); v.gain.setValueAtTime(0, t);
+    for (let i = 0; i < 3; i++) { v.gain.linearRampToValueAtTime(.35, t + i * .5 + .03); v.gain.linearRampToValueAtTime(0, t + i * .5 + .3); }
+    o.start(t); o.stop(t + 1.6);
+  } catch (e) {}
+}
+function arm(x) { setTimeout(() => { sv("tm", JSON.stringify(tmGet().filter(y => y.id !== x.id))); alarm(x.l); }, Math.max(0, x.at - Date.now())); }
+sv("tm", JSON.stringify(tmGet().filter(x => x.at > Date.now() - 6e5))); tmGet().forEach(x => arm(x));
 
 /* ---- HUD ---- */
 const cv = $("hud"), cx = cv.getContext("2d"), RM = matchMedia("(prefers-reduced-motion:reduce)").matches;
