@@ -158,17 +158,29 @@ body[data-v=cv] #cv{display:flex}
     <button class="btn" id="cc">Suhbatni tozalash</button>
     <button class="btn" id="inst" style="display:none">Ilova sifatida oʻrnatish</button>
   </div>
+  <div class="card" id="pc" style="display:none">
+    <h3>Telefon boshqaruvi</h3>
+    <p class="hint" id="ph"></p>
+    <div class="row"><button class="btn" id="pa">Ruxsatlar</button><button class="btn" id="ps">Ilova sozlamalari</button></div>
+  </div>
 </div></div>
 <script>
 
 const $ = id => document.getElementById(id), LS = window.localStorage;
+const NJ = window.JarvisNative || null, Q = [];
+let micLvl = 0;
+const nj = (n, a) => { try { return JSON.parse(NJ.act(n, JSON.stringify(a || {}))); } catch (e) { return { error: String(e.message || e) }; } };
+const later = f => { Q.push(f); };
+function flushQ() { Q.splice(0).forEach(f => { try { f(); } catch (e) {} }); }
+const NSYS = " Telefonni boshqarish vositalaring bor: budilnik, taymer, qoʻngʻiroq, ilova ochish, havola ochish, ovoz balandligi, fonar, musiqa boshqaruvi. Buyruq berilsa, darhol tegishli vositani chaqir va juda qisqa tasdiqla (masalan: Budilnik oltiga qoʻyildi, boss). Ilova ochish va qoʻngʻiroq javobing aytilgandan keyin bajariladi, shuning uchun hozirgi zamonda ayt (Telegram ochilyapti). Kontakt ismi nutq tanishda buzilishi mumkin: eng yaqin ismni sinab koʻr, bir nechta mos kelsa qaysi biri ekanini soʻra. Ilova nomini odatdagi koʻrinishda uzat (Telegram, YouTube, Camera, Settings).";
+const SE = { "not-allowed": "Mikrofonga ruxsat bering va qayta bosing.", "service-not-allowed": "Nutq tanish xizmati yoʻq. Google ilovasini yangilang.", network: "Internet aloqasi yoʻq.", "audio-capture": "Mikrofon ishlamayapti.", busy: "Nutq tanish band, qayta urinib koʻring.", "language-not-supported": "Oʻzbek tili nutq tanishda mavjud emas." };
 const API = "https://generativelanguage.googleapis.com/v1beta/", TTS = "https://my.neuronai.uz/api/v1/tts";
 const SYS = "Sen 4eKhSAI — foydalanuvchining shaxsiy ovozli yordamchisisan. Faqat oʻzbek tilida, lotin yozuvida gapir. Javoblaring ovozda aytiladi: qisqa (1–3 jumla), aniq va tabiiy boʻlsin; roʻyxat, belgi va emoji ishlatma. Foydalanuvchiga \"boss\" deb murojaat qil. Maslahat soʻralsa, aniq tavsiya ber. Ismingni faqat soʻralganda ayt.";
 const g = (k, d) => LS.getItem(k) || d, sv = (k, v) => LS.setItem(k, v);
 let key = g("k", ""), model = g("m", "auto"), nkey = g("nk", ""), nvoice = g("nv", "kamron");
 let hist = [], rec = null, S = "idle", aud = null, AC = null, an = null, fd = null, SP = null, mem = [];
 try { mem = JSON.parse(g("mem", "[]")); } catch (e) {}
-const sys = () => SYS + " Hozir: " + new Date().toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }) + ". Nutq tanish xato qilishi mumkin: maʼnosini taxmin qil, juda tushunarsiz boʻlsa bitta qisqa savol ber. %, °C, $ va qisqartmalarni soʻz bilan yoz." + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla.";
+const sys = () => SYS + " Hozir: " + new Date().toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }) + ". Nutq tanish xato qilishi mumkin: maʼnosini taxmin qil, juda tushunarsiz boʻlsa bitta qisqa savol ber. %, °C, $ va qisqartmalarni soʻz bilan yoz." + (mem.length ? " Foydalanuvchi haqida eslab qolganlaring: " + mem.join("; ") + "." : "") + " Kerak boʻlsa vositalardan foydalan: vaqt, ob-havo, taymer, internet qidiruvi. Foydalanuvchi oʻzi haqida doimiy muhim narsa aytsa (ism, oila, odat), remember vositasi bilan saqla." + (NJ ? NSYS : "");
 function upd() {
   const l = $("ml"); l.innerHTML = "";
   if (!mem.length) { const p = document.createElement("p"); p.className = "hint"; p.textContent = "Hozircha hech narsa yoʻq. Masalan: “Ismim Shaxriyor, eslab qol” deng."; l.appendChild(p); }
@@ -450,7 +462,7 @@ async function speak(t) {
 }
 
 async function turn(q, voice = true) {
-  say(q, "u"); $("cq").textContent = q; $("ca").textContent = ""; setS("think");
+  Q.length = 0; say(q, "u"); $("cq").textContent = q; $("ca").textContent = ""; setS("think");
   const d = msg("j", ""); d.innerHTML = '<span class="dt"><i></i><i></i><i></i></span>';
   const sp = SP = newSpeaker(); ac = new AbortController(); let buf = "", full = "", first = true;
   const feed = fin => { if (!voice) return; const [ss, rest] = takeSentences(buf, fin, first ? 12 : 24); buf = rest; if (ss.length) first = false; ss.forEach(s => sp.add(s.replace(/[*_#`]/g, ""))); };
@@ -461,12 +473,27 @@ async function turn(q, voice = true) {
   } catch (e) { if (!full) d.parentElement.remove(); if (!ac.signal.aborted) say("Xato: " + fe(e), "s"); }
   if (full.trim()) { chat.push({ r: "j", t: full, ts: Date.now() }); saveChat(); }
   sp.end(); await sp.run;
-  if (sp.stopped) return;
+  if (sp.stopped) { Q.length = 0; return; }
   setS("idle");
+  if (Q.length) { flushQ(); return; }
   if (voice && $("auto").checked) relisten(); else if (!voice) stat("");
 }
 
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+class NativeSR {
+  constructor() { this.lang = "uz-UZ"; }
+  start() { window.__sr = this; NJ.listen(this.lang); }
+  stop() { NJ.stopListen(); }
+  abort() { NJ.cancelListen(); }
+}
+window.__srEv = (k, v) => {
+  const r = window.__sr; if (!r) return;
+  if (k === "start") r.onstart && r.onstart();
+  else if (k === "res") r.onresult && r.onresult({ results: [[{ transcript: v }]] });
+  else if (k === "err") r.onerror && r.onerror({ error: v });
+  else if (k === "end") r.onend && r.onend();
+  else if (k === "rms") micLvl = Math.max(micLvl, Math.min(1, (+v + 2) / 12));
+};
+const SR = NJ ? NativeSR : (window.SpeechRecognition || window.webkitSpeechRecognition);
 function listen() {
   if (!SR) { stat("Bu brauzer nutq tanishni qoʻllamaydi. Chrome ishlating."); return; }
   if (!ready()) return;
@@ -474,7 +501,7 @@ function listen() {
   let fin = "", err = "";
   rec.onstart = () => { setS("listen"); stat("Tinglayapman…"); $("cq").textContent = ""; $("ca").textContent = ""; };
   rec.onresult = e => { let t = ""; for (const r of e.results) t += r[0].transcript; fin = t; $("cq").textContent = t; };
-  rec.onerror = e => { err = (e.error === "no-speech" || e.error === "aborted") ? "" : e.error; if (err) stat("Nutq xatosi: " + err); };
+  rec.onerror = e => { err = (e.error === "no-speech" || e.error === "aborted") ? "" : e.error; if (err) stat(SE[err] || "Nutq xatosi: " + err); };
   rec.onend = () => {
     if (err) { setS("idle"); return; }
     const q = fin.trim();
@@ -519,15 +546,16 @@ $("mm").onclick = () => { if (confirm("Xotira tozalansinmi?")) { mem = []; sv("m
 let dp = null;
 addEventListener("beforeinstallprompt", e => { e.preventDefault(); dp = e; $("inst").style.display = ""; });
 $("inst").onclick = async () => { if (dp) { dp.prompt(); await dp.userChoice; dp = null; $("inst").style.display = "none"; } };
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+if ("serviceWorker" in navigator && !NJ) navigator.serviceWorker.register("sw.js").catch(() => {});
 upd();
 
 /* ---- Doimiy suhbat, taymer ---- */
-const relisten = () => setTimeout(() => { if (S === "idle" && $("auto").checked) listen(); }, 450);
+const relisten = () => setTimeout(() => { if (S === "idle" && $("auto").checked && !document.hidden) listen(); }, 450);
 let wl = null;
 async function keepOn() { try { if (navigator.wakeLock && $("auto").checked && !document.hidden && !wl) { wl = await navigator.wakeLock.request("screen"); wl.onrelease = () => { wl = null; }; } } catch (e) {} }
 $("auto").checked = g("auto", "") === "1";
-$("auto").onchange = () => { sv("auto", $("auto").checked ? "1" : "0"); if ($("auto").checked) { unlock(); keepOn(); } else if (wl) wl.release(); };
+if (NJ) { try { NJ.keepAwake($("auto").checked); } catch (e) {} }
+$("auto").onchange = () => { sv("auto", $("auto").checked ? "1" : "0"); if ($("auto").checked) { unlock(); keepOn(); } else if (wl) wl.release(); if (NJ) { try { NJ.keepAwake($("auto").checked); } catch (e) {} } };
 document.addEventListener("visibilitychange", () => { if (!document.hidden) keepOn(); });
 try { speechSynthesis.getVoices(); } catch (e) {}
 const tmGet = () => { try { return JSON.parse(g("tm", "[]")); } catch (e) { return []; } };
@@ -543,7 +571,7 @@ function beep() {
 function arm() { tick(); }
 function tick() {
   const now = Date.now(), all = tmGet(), due = all.filter(x => x.at <= now);
-  if (due.length) { sv("tm", JSON.stringify(all.filter(x => x.at > now))); due.forEach(x => alarm(x.l)); }
+  if (due.length) { sv("tm", JSON.stringify(all.filter(x => x.at > now))); due.forEach(x => { if (!x.n) alarm(x.l); }); }
   const nx = tmGet().sort((p, q) => p.at - q.at)[0], tp = $("tp");
   if (nx) {
     const s = Math.max(0, Math.round((nx.at - now) / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), q = s % 60;
@@ -551,6 +579,54 @@ function tick() {
   } else tp.classList.remove("on");
 }
 sv("tm", JSON.stringify(tmGet().filter(x => x.at > Date.now() - 6e5))); tick(); setInterval(tick, 1000); document.addEventListener("visibilitychange", tick);
+
+/* ---- Android ilova (APK): telefonni boshqarish ---- */
+window.__back = () => { const w = $("wrap"); if (w.classList.contains("open")) { w.classList.remove("open"); return true; } return false; };
+if (NJ) {
+  const D = TOOLS[0].functionDeclarations, t0 = FN.set_timer;
+  D.splice(D.findIndex(d => d.name === "set_timer"), 1);
+  D.push(
+    { name: "set_timer", description: "Telefon taymerini qoʻyadi (ilova yopiq boʻlsa ham jiringlaydi)", parameters: { type: "object", properties: { seconds: { type: "integer" }, label: { type: "string" } }, required: ["seconds"] } },
+    { name: "set_alarm", description: "Budilnik qoʻyadi. Vaqt 24 soatlik formatda", parameters: { type: "object", properties: { hour: { type: "integer" }, minute: { type: "integer" }, label: { type: "string" }, daily: { type: "boolean", description: "har kuni takrorlansin" } }, required: ["hour", "minute"] } },
+    { name: "call", description: "Kontaktga (ism boʻyicha) yoki raqamga qoʻngʻiroq qiladi", parameters: { type: "object", properties: { name: { type: "string", description: "kontakt ismi" }, number: { type: "string", description: "telefon raqami (ism boʻlmasa)" } } } },
+    { name: "open_app", description: "Telefondagi ilovani ochadi", parameters: { type: "object", properties: { name: { type: "string", description: "ilova nomi odatdagi koʻrinishda: Telegram, YouTube, Camera, Settings" } }, required: ["name"] } },
+    { name: "open_url", description: "Havolani ochadi: sayt, YouTube qidiruvi, xarita (https://www.google.com/maps/search/?api=1&query=...)", parameters: { type: "object", properties: { url: { type: "string" } }, required: ["url"] } },
+    { name: "set_volume", description: "Media ovoz balandligi: percent (0-100) yoki direction (up yoki down)", parameters: { type: "object", properties: { percent: { type: "integer" }, direction: { type: "string", enum: ["up", "down"] } } } },
+    { name: "flashlight", description: "Fonarni yoqadi yoki oʻchiradi", parameters: { type: "object", properties: { on: { type: "boolean" } }, required: ["on"] } },
+    { name: "media", description: "Musiqa boshqaruvi", parameters: { type: "object", properties: { action: { type: "string", enum: ["play_pause", "next", "previous", "stop"] } }, required: ["action"] } }
+  );
+  FN.set_timer = async ({ seconds, label }) => {
+    const n = Math.max(1, Math.min(+seconds || 0, 86400)), r = nj("timer", { seconds: n, label: label || "" });
+    if (r.error) return t0({ seconds: n, label });
+    sv("tm", JSON.stringify([...tmGet(), { id: Date.now(), at: Date.now() + n * 1000, l: label || "Vaqt tugadi", n: 1 }])); tick();
+    return { ok: true, seconds: n };
+  };
+  FN.set_alarm = async a => nj("alarm", a);
+  FN.set_volume = async a => nj("volume", a);
+  FN.flashlight = async a => nj("torch", a);
+  FN.media = async a => nj("media", a);
+  FN.open_url = async ({ url }) => {
+    if (!/^https?:\/\//i.test(url || "")) return { error: "faqat http yoki https havola" };
+    later(() => nj("url", { url })); return { ok: true, note: "javobdan keyin ochiladi" };
+  };
+  FN.open_app = async ({ name }) => {
+    const r = nj("find_app", { name }); if (r.error) return r;
+    later(() => nj("launch", { pkg: r.pkg })); return { ok: true, app: r.label, note: "javobdan keyin ochiladi" };
+  };
+  FN.call = async ({ name, number }) => {
+    const raw = String(number || "").replace(/[^\d+*#]/g, "");
+    if (raw) { later(() => nj("call", { number: raw, direct: false })); return { ok: true, calling: raw, note: "raqam terish oynasi ochiladi" }; }
+    const r = nj("find_contact", { name: name || "" }); if (r.error) return r;
+    later(() => nj("call", { number: r.number, direct: true })); return { ok: true, calling: r.name, note: "javobdan keyin qoʻngʻiroq boshlanadi" };
+  };
+  const pst = () => {
+    const p = nj("perms"), y = v => v ? "bor" : "yoʻq";
+    $("ph").textContent = "Mikrofon: " + y(p.mic) + " · Kontaktlar: " + y(p.contacts) + " · Qoʻngʻiroq: " + y(p.call);
+  };
+  $("pc").style.display = ""; pst(); window.__perm = pst;
+  $("pa").onclick = () => { nj("ask_perms"); setTimeout(pst, 800); };
+  $("ps").onclick = () => nj("app_settings");
+}
 
 $("rd").checked = g("rd", "") === "1";
 $("rd").onchange = () => { sv("rd", $("rd").checked ? "1" : "0"); stat($("rd").checked ? "Javoblar ovozda aytiladi." : "Javoblar faqat yoziladi."); };
@@ -574,8 +650,8 @@ function frame(now) {
   const poly = (n, r, rot, a) => { cx.strokeStyle = rc(a); cx.lineWidth = 1.8 * sc; cx.beginPath(); for (let i = 0; i <= n; i++) { const q = rot + i / n * 6.283; cx[i ? "lineTo" : "moveTo"](Math.cos(q) * r, Math.sin(q) * r); } cx.stroke(); };
   let tg;
   if (S === "speak") { if (an) { an.getByteFrequencyData(fd); let s = 0; for (let i = 0; i < 24; i++) s += fd[i + 1]; tg = Math.min(1, s / 24 / 200); } else tg = .35 + .2 * Math.sin(t * 9) * Math.sin(t * 2.7); }
-  else tg = S === "listen" ? .28 + .14 * Math.sin(t * 5) : S === "think" ? .2 : .08 + .04 * Math.sin(t * 1.6);
-  lvl += (tg - lvl) * .18;
+  else tg = S === "listen" ? .28 + .14 * Math.sin(t * 5) + micLvl * .45 : S === "think" ? .2 : .08 + .04 * Math.sin(t * 1.6);
+  micLvl *= .93; lvl += (tg - lvl) * .18;
   cx.clearRect(0, 0, W, W); cx.save(); cx.translate(c, c); cx.lineCap = "round";
   let gr = cx.createRadialGradient(0, 0, 0, 0, 0, R * .62);
   gr.addColorStop(0, rc(.28 + lvl * .6)); gr.addColorStop(1, rc(0));
